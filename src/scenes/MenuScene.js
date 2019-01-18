@@ -13,8 +13,8 @@ export default class MenuScene extends Phaser.Scene {
       fill: '#0f0',
       fontSize: '64px'
     };
-    const btnStartGame = this.add.text(250, 100, 'Start Game', menuStyle);
-    const btnOptions = this.add.text(250, 200, 'Options', menuStyle);
+    const btnStartGame = this.add.text(200, 100, 'Start Game', menuStyle);
+    const btnOptions = this.add.text(200, 200, 'Options', menuStyle);
     btnStartGame.setInteractive();
     btnStartGame.on('pointerdown', () => {
       this.scene.start('Game');
