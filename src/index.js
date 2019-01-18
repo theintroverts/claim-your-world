@@ -1,34 +1,23 @@
 import 'phaser';
-
-var config = {
-    type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: 800,
-    height: 600,
-    scene: {
-        preload: preload,
-        create: create
-    }
-};
-
-var game = new Phaser.Game(config);
-
-function preload ()
-{
-    this.load.image('logo', 'assets/logo.png');
+import config from './config/config';
+import GameScene from './scenes/GameScene';
+import BootScene from './scenes/BootScene';
+import PreloaderScene from './scenes/PreloaderScene';
+import TitleScene from './scenes/TitleScene';
+import OptionsScene from './scenes/OptionsScene';
+import CreditsScene from './scenes/CreditsScene';
+ 
+class Game extends Phaser.Game {
+  constructor () {
+    super(config);
+    this.scene.add('Boot', BootScene);
+    this.scene.add('Preloader', PreloaderScene);
+    this.scene.add('Title', TitleScene);
+    this.scene.add('Options', OptionsScene);
+    this.scene.add('Credits', CreditsScene);
+    this.scene.add('Game', GameScene);
+    this.scene.start('Boot');
+  }
 }
-
-function create ()
-{
-    var logo = this.add.image(400, 150, 'logo');
-
-    this.tweens.add({
-        targets: logo,
-        y: 450,
-        duration: 2000,
-        ease: 'Power2',
-        yoyo: true,
-        loop: -1
-    });
-
-}
+ 
+window.game = new Game();
