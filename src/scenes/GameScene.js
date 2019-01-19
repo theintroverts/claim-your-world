@@ -4,25 +4,40 @@ export default class GameScene extends Phaser.Scene {
   constructor () {
     super('Game');
   }
+
+  init() {
+    this.timeLeft = this.registry.get('GameDuration');
+  }
  
+  /**
+   * Preload images.
+   */
   preload () {
     // load images
-    this.load.image('logo', 'assets/logo.png');
     this.load.image('saw', 'assets/sprites/saw.png');
     this.load.image('blue', 'assets/particles/blue.png');
   }
  
+  /**
+   * Create game start.
+   */
   create () {
-    this.add.image(400, 300, 'logo');
+    // Background image
+    const logo = this.add.image(400, 300, 'ggj-logo');
+    logo.setScale(.5);
+
+    // Add time left text
     const menuStyle = {
-      fill: '#0f0',
+      fill: '#02c6c9',
       fontSize: '32px'
     };
     this.add.text(32, 32, 'Time left:', menuStyle);
-    this.timeLeft = 20;
     this.textTimeLeft = this.add.text(200, 32, this.timeLeft, menuStyle);
+
+    // Use physics
     this.matter.world.setBounds(0, 0, 800, 600);
 
+    // Create particles and affect them by physics engine
     for (var i = 0; i < 200; i++)
     {
         var particle = this.matter.add.image(
@@ -39,11 +54,17 @@ export default class GameScene extends Phaser.Scene {
         particle.setMass(1);
     }
 
+    // Add saw and make it dragable by the mouse
     this.matter.add.image(400, 0, 'saw').setBounce(0.8).setMass(60);
-
     this.matter.add.mouseSpring();
   }
 
+  /**
+   * Update left game duration each tick and end game after time ends.
+   *
+   * @param {float} time Total game time in microseconds.
+   * @param {float} delta Delta time in microseconds.
+   */
   update (time, delta)
   {
       this.timeLeft = this.timeLeft - (delta / 1000);

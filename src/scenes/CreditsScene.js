@@ -8,6 +8,9 @@ export default class CreditsScene extends Phaser.Scene {
   preload () {
   }
  
+  /**
+   * Dumps the credits.
+   */
   create () {
     const menuStyle = {
       fill: '#0f0',
