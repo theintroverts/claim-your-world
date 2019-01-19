@@ -14,7 +14,14 @@ export default class GameScene extends Phaser.Scene {
  
   create () {
     this.add.image(400, 300, 'logo');
-    this.matter.world.setBounds(0, 0, 800, 550);
+    const menuStyle = {
+      fill: '#0f0',
+      fontSize: '32px'
+    };
+    this.add.text(32, 32, 'Time left:', menuStyle);
+    this.timeLeft = 20;
+    this.textTimeLeft = this.add.text(200, 32, this.timeLeft, menuStyle);
+    this.matter.world.setBounds(0, 0, 800, 600);
 
     for (var i = 0; i < 200; i++)
     {
@@ -35,5 +42,16 @@ export default class GameScene extends Phaser.Scene {
     this.matter.add.image(400, 0, 'saw').setBounce(0.8).setMass(60);
 
     this.matter.add.mouseSpring();
+  }
+
+  update (time, delta)
+  {
+      this.timeLeft = this.timeLeft - (delta / 1000);
+
+      if (this.timeLeft < 0) {
+        this.scene.start('Credits');
+      }
+
+      this.textTimeLeft.setText(Math.ceil(this.timeLeft));
   }
 };
