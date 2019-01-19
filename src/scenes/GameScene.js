@@ -16,7 +16,7 @@ export default class GameScene extends Phaser.Scene {
     this.add.image(400, 300, 'logo');
     this.matter.world.setBounds(0, 0, 800, 550);
 
-    for (var i = 0; i < 256; i++)
+    for (var i = 0; i < 200; i++)
     {
         var particle = this.matter.add.image(
             Phaser.Math.Between(0, 800),

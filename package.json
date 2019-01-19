@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/photonstorm/phaser3-project-template#readme",
   "devDependencies": {
+    "hard-source-webpack-plugin": "^0.13.1",
     "raw-loader": "^1.0.0",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",

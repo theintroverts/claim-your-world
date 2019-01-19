@@ -3,9 +3,13 @@
 const webpack = require('webpack');
 const path = require('path');
 
+var HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+
 module.exports = {
 
     entry: './src/index.js',
+
+    mode: 'development',
 
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -15,14 +19,15 @@ module.exports = {
 
     module: {
         rules: [
-          {
-            test: [ /\.vert$/, /\.frag$/ ],
-            use: 'raw-loader'
-          }
+            {
+                test: [ /\.vert$/, /\.frag$/ ],
+                use: 'raw-loader'
+            }
         ]
     },
 
     plugins: [
+        new HardSourceWebpackPlugin(),
         new webpack.DefinePlugin({
             'CANVAS_RENDERER': JSON.stringify(true),
             'WEBGL_RENDERER': JSON.stringify(true)
