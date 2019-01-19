@@ -13,11 +13,13 @@ export default class CreditsScene extends Phaser.Scene {
    */
   create () {
     const menuStyle = {
-      fill: '#0f0',
+      fill: '#02c6c9',
       fontSize: '50px',
       align: 'center'
     };
-    const btnStartGame = this.add.text(100, 170, 'Made by DerMaddin <3\nThank you for playing\nClick on text to return\nto Mainmenu', menuStyle);
+    this.add.text(150, 140, 'Particles hit:', menuStyle);
+    this.add.text(500, 140, this.registry.get('points'), menuStyle);
+    const btnStartGame = this.add.text(100, 270, 'Made by DerMaddin <3\nThank you for playing\nClick on text to return\nto Mainmenu', menuStyle);
     btnStartGame.setInteractive();
     btnStartGame.on('pointerdown', () => {
       this.scene.start('Menu');
