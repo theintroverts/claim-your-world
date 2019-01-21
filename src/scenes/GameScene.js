@@ -43,7 +43,7 @@ export default class GameScene extends Phaser.Scene {
     // Create particles and affect them by physics engine
     for (var i = 0; i < 200; i++)
     {
-        var particle = this.matter.add.image(
+        var particle = this.matter.add.sprite(
             Phaser.Math.Between(0, 800),
             Phaser.Math.Between(400, 800),
             'blue', null,
@@ -52,13 +52,16 @@ export default class GameScene extends Phaser.Scene {
 
         particle.setScale(0.8);
         particle.setBlendMode('ADD');
-        particle.setFriction(0.005);
-        particle.setBounce(0.8);
-        particle.setMass(1);
+        particle.setFriction(0.01);
+        particle.setBounce(0.5);
+        particle.setMass(5);
     }
 
     // Add saw and make it dragable by the mouse
-    this.matter.add.image(400, 0, 'saw', null, { label: 'saw' }).setBounce(0.8).setMass(60);
+    const saw = this.matter.add.sprite(400, 0, 'saw', null, { label: 'saw' });
+    saw.setBounce(0);
+    saw.setMass(20);
+    saw.setScale(.6);
     this.matter.add.mouseSpring();
 
     // Collisiondetection between particles and saw to add points
