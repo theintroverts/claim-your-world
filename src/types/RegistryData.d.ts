@@ -1,3 +1,3 @@
 declare interface RegistryData {
-    points: number
+    energyLevel: number
 }

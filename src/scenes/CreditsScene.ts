@@ -16,8 +16,8 @@ export default class CreditsScene extends Phaser.Scene {
             fontSize: '50px',
             align: 'center',
         }
-        this.add.text(150, 140, 'Particles hit:', menuStyle)
-        this.add.text(500, 140, String(this.registry.get('points')), menuStyle)
+        this.add.text(150, 140, 'Energy Level:', menuStyle)
+        this.add.text(500, 140, String(this.registry.get('energyLevel')), menuStyle)
         const btnStartGame = this.add.text(
             100,
             270,

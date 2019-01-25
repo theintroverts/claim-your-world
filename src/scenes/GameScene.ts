@@ -6,7 +6,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     public init() {
-        this.points = 0
+        this.energyLevel = 0
     }
 
     /**
@@ -32,8 +32,8 @@ export default class GameScene extends Phaser.Scene {
             fontSize: '32px',
         }
 
-        this.add.text(580, 32, 'Points:', menuStyle)
-        this.textPoints = this.add.text(700, 32, String(this.points), menuStyle)
+        this.add.text(580, 32, 'Energy Level:', menuStyle)
+        this.textEnergyLevel = this.add.text(700, 32, String(this.energyLevel), menuStyle)
 
         // Use physics
         this.matter.world.setBounds(0, 0, 800, 600)
@@ -80,7 +80,7 @@ export default class GameScene extends Phaser.Scene {
                         (bodyA.label === 'saw' && bodyB.label === 'particle') ||
                         (bodyB.label === 'saw' && bodyA.label === 'particle')
                     ) {
-                        this.points++
+                        this.energyLevel++
                     }
                 }
             },
@@ -96,10 +96,9 @@ export default class GameScene extends Phaser.Scene {
      */
     public update(time: number, delta: number) {
 
-        this.textPoints.setText(String(this.points))
+        this.textEnergyLevel.setText(String(this.energyLevel))
     }
 
-    private textTimeLeft: Phaser.GameObjects.Text = undefined as any
-    private textPoints: Phaser.GameObjects.Text = undefined as any
-    private points: number = undefined as any
+    private textEnergyLevel: Phaser.GameObjects.Text = undefined as any
+    private energyLevel: number = undefined as any
 }
