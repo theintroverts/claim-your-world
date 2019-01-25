@@ -1,10 +1,9 @@
-import 'phaser'
+import 'phaser';
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
         super('Game')
     }
-
 
     public init() {
         this.energyLevel = 0
@@ -14,7 +13,8 @@ export default class GameScene extends Phaser.Scene {
      * Preload images.
      */
     public preload() {
-        }
+        this.load.image('dude', 'assets/sprites/dude.png')
+    }
 
     /**
      * Create game start.
@@ -27,11 +27,18 @@ export default class GameScene extends Phaser.Scene {
         }
 
         this.add.text(350, 32, 'Energy Level:', menuStyle)
-        this.textEnergyLevel = this.add.text(700, 32, String(this.energyLevel), menuStyle)
+        this.textEnergyLevel = this.add.text(
+            700,
+            32,
+            String(this.energyLevel),
+            menuStyle
+        )
 
-        // Use physics
-        this.matter.world.setBounds(0, 0, 800, 600)
+        this.player = this.physics.add.sprite(100, 450, 'dude')
+        this.player.setBounce(0.2)
+        this.player.setCollideWorldBounds(true)
 
+        this.cursors = this.input.keyboard.createCursorKeys()
     }
 
     /**
@@ -41,10 +48,27 @@ export default class GameScene extends Phaser.Scene {
      * @param {float} delta Delta time in microseconds.
      */
     public update(time: number, delta: number) {
-
         this.textEnergyLevel.setText(String(this.energyLevel))
+
+        if (this.cursors.left!.isDown) {
+            this.player.setVelocityX(-160)
+        } else if (this.cursors.right!.isDown) {
+            this.player.setVelocityX(160)
+        } else {
+            this.player.setVelocityX(0)
+        }
+
+        if (this.cursors.up!.isDown) {
+            this.player.setVelocityY(-160)
+        } else if (this.cursors.down!.isDown) {
+            this.player.setVelocityY(160)
+        } else {
+            this.player.setVelocityY(0)
+        }
     }
 
     private textEnergyLevel: Phaser.GameObjects.Text = undefined as any
     private energyLevel: number = undefined as any
+    private cursors: Phaser.Input.Keyboard.CursorKeys = undefined as any
+    private player: Phaser.Physics.Arcade.Sprite = undefined as any
 }
