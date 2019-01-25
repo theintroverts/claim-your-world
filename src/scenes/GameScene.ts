@@ -34,11 +34,17 @@ export default class GameScene extends Phaser.Scene {
             menuStyle
         )
 
+        this.buildings = this.physics.add.group({})
+        this.buildings.add(this.add.rectangle(100, 100, 200, 400, 0xff0000))
+        this.buildings.add(this.add.rectangle(500, 20, 400, 200, 0x00ff00))
+
         this.player = this.physics.add.sprite(100, 450, 'dude')
         this.player.setBounce(0.2)
         this.player.setCollideWorldBounds(true)
 
         this.cursors = this.input.keyboard.createCursorKeys()
+
+        this.physics.add.collider(this.player, this.buildings)
     }
 
     /**
@@ -71,4 +77,5 @@ export default class GameScene extends Phaser.Scene {
     private energyLevel: number = undefined as any
     private cursors: Phaser.Input.Keyboard.CursorKeys = undefined as any
     private player: Phaser.Physics.Arcade.Sprite = undefined as any
+    private buildings: Phaser.GameObjects.Group = undefined as any
 }

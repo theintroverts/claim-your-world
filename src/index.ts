@@ -1,8 +1,9 @@
-import 'phaser'
-import config from './config/config'
-import BootScene from './scenes/BootScene'
-import GameScene from './scenes/GameScene'
-import MenuScene from './scenes/MenuScene'
+import 'phaser';
+
+import config from './config/config';
+import BootScene from './scenes/BootScene';
+import GameScene from './scenes/GameScene';
+import MenuScene from './scenes/MenuScene';
 
 declare global {
     interface Window {
