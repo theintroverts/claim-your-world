@@ -6,7 +6,6 @@ export default class GameScene extends Phaser.Scene {
     }
 
     public init() {
-        this.timeLeft = this.registry.get('GameDuration')
         this.points = 0
     }
 
@@ -32,13 +31,7 @@ export default class GameScene extends Phaser.Scene {
             fill: '#02c6c9',
             fontSize: '32px',
         }
-        this.add.text(32, 32, 'Time left:', menuStyle)
-        this.textTimeLeft = this.add.text(
-            200,
-            32,
-            String(this.timeLeft),
-            menuStyle
-        )
+
         this.add.text(580, 32, 'Points:', menuStyle)
         this.textPoints = this.add.text(700, 32, String(this.points), menuStyle)
 
@@ -102,18 +95,10 @@ export default class GameScene extends Phaser.Scene {
      * @param {float} delta Delta time in microseconds.
      */
     public update(time: number, delta: number) {
-        this.timeLeft = this.timeLeft - delta / 1000
 
-        if (this.timeLeft < 0) {
-            this.registry.set('points', this.points)
-            this.scene.start('Credits')
-        }
-
-        this.textTimeLeft.setText(String(Math.ceil(this.timeLeft)))
         this.textPoints.setText(String(this.points))
     }
 
-    private timeLeft: number = undefined as any
     private textTimeLeft: Phaser.GameObjects.Text = undefined as any
     private textPoints: Phaser.GameObjects.Text = undefined as any
     private points: number = undefined as any

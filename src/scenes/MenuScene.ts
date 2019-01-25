@@ -27,9 +27,5 @@ export default class MenuScene extends Phaser.Scene {
             },
             this
         )
-
-        // Will be read in the GameScene
-        // Starting point for creating an Options menu.
-        this.registry.set('GameDuration', 20)
     }
 }
