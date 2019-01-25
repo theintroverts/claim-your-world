@@ -29,9 +29,13 @@ export default class GameScene extends Phaser.Scene {
         this.add.text(350, 32, 'Energy Level:', menuStyle);
         this.textEnergyLevel = this.add.text(700, 32, String(this.energyLevel), menuStyle);
 
-        this.buildings = this.physics.add.group({});
-        this.buildings.add(this.add.rectangle(100, 100, 200, 400, 0xff0000));
-        this.buildings.add(this.add.rectangle(500, 20, 400, 200, 0x00ff00));
+        this.buildings = this.physics.add.group({
+            immovable: true,
+        });
+        const redBuilding = this.add.rectangle(100, 100, 200, 400, 0xff0000);
+        const greenBuilding = this.add.rectangle(500, 20, 400, 200, 0x00ff00);
+
+        this.buildings.addMultiple([redBuilding, greenBuilding]);
 
         this.player = this.physics.add.sprite(100, 450, 'dude');
         this.player.setBounce(0.2);
@@ -39,7 +43,14 @@ export default class GameScene extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.physics.add.collider(this.player, this.buildings);
+        this.physics.add.collider(this.player, this.buildings, (o1: any, o2: any) => {
+            if (o1 === this.player && o2 === redBuilding) {
+                console.log('red!');
+            }
+            if (o1 === this.player && o2 === greenBuilding) {
+                console.log('green!');
+            }
+        });
     }
 
     /**
