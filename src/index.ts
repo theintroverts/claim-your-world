@@ -7,20 +7,20 @@ import MenuScene from './scenes/MenuScene';
 
 declare global {
     interface Window {
-        game: Game
+        game: Game;
     }
 }
 
 class Game extends Phaser.Game {
     constructor() {
-        super(config)
+        super(config);
 
-        this.scene.add('Boot', BootScene)
-        this.scene.add('Menu', MenuScene)
-        this.scene.add('Game', GameScene)
+        this.scene.add('Boot', BootScene);
+        this.scene.add('Menu', MenuScene);
+        this.scene.add('Game', GameScene);
 
-        this.scene.start('Game')
+        this.scene.start('Game');
     }
 }
 
-window.game = new Game()
+window.game = new Game();

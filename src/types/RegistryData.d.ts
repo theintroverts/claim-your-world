@@ -1,3 +1,3 @@
 declare interface RegistryData {
-    energyLevel: number
+    energyLevel: number;
 }
