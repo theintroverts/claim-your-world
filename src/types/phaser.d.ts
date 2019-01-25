@@ -8183,7 +8183,7 @@ declare namespace Phaser {
              * Do not modify this object directly. Adding properties directly to this object will not
              * emit any events. Always use `DataManager.set` to create new items the first time around.
              */
-            values: {[key: string]:  any};
+            values: RegistryData;
 
             /**
              * Retrieves the value for the given key, or undefined if it doesn't exist.
@@ -8209,7 +8209,11 @@ declare namespace Phaser {
              * This approach is useful for destructuring arrays in ES6.
              * @param key The key of the value to retrieve, or an array of keys.
              */
-            get(key: string | string[]): any;
+            get<K extends keyof RegistryData>(key: K): RegistryData[K];
+            get<K1 extends keyof RegistryData>(keys: [K1]): [RegistryData[K1]];
+            get<K1 extends keyof RegistryData, K2 extends keyof RegistryData>(keys: [K1, K2]): [RegistryData[K1], RegistryData[K2]];
+            get<K1 extends keyof RegistryData, K2 extends keyof RegistryData, K3 extends keyof RegistryData>(keys: [K1, K2, K3]): [RegistryData[K1], RegistryData[K2], RegistryData[K3]];
+            get<K1 extends keyof RegistryData, K2 extends keyof RegistryData, K3 extends keyof RegistryData, K4 extends keyof RegistryData>(keys: [K1, K2, K3, K4]): [RegistryData[K1], RegistryData[K2], RegistryData[K3], RegistryData[K4]];
 
             /**
              * Retrieves all data values in a new object.
@@ -8258,7 +8262,9 @@ declare namespace Phaser {
              * @param key The key to set the value for. Or an object or key value pairs. If an object the `data` argument is ignored.
              * @param data The value to set for the given key. If an object is provided as the key this argument is ignored.
              */
-            set(key: string | object, data: any): Phaser.Data.DataManager;
+            set<K extends keyof RegistryData>(key: K, data: RegistryData[K]): Phaser.Data.DataManager;
+            set(values: Partial<RegistryData>): Phaser.Data.DataManager;
+
 
             /**
              * Passes all data entries to the given callback.
