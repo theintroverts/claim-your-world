@@ -107,20 +107,15 @@ class Character extends React.Component<Props, CharacterState> {
             position: 'absolute',
             left: x,
             top: y,
-            width: 16,
-            height: 16,
-            transform: 'translateX(-8px) translateY(-8px)',
+            width: 12,
+            height: 12,
+            transform: 'translateX(-6px) translateY(-6px)',
         };
     }
 
-    getCharacterProps(): React.CSSProperties {
+    getSpriteWrapperStyle(): React.CSSProperties {
         return {
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: 17.5,
-            height: 32,
-            transform: 'translateX(-0.5px) translateY(-16px)',
+            transform: 'translateX(-2px) translateY(-12px)',
         };
     }
 
@@ -129,17 +124,19 @@ class Character extends React.Component<Props, CharacterState> {
 
         return (
             <div style={this.getWrapperStyles()}>
-                <GameKitBody args={[x, y, 16, 16]} inertia={Infinity} ref={this.bodyRef}>
-                    <Sprite
-                        tileHeight={24}
-                        tileWidth={16}
-                        key={this.state.isMoving.toString()}
-                        repeat={this.state.isMoving}
-                        src="tiles/kavi.png"
-                        scale={1}
-                        state={this.state.spriteState}
-                        steps={[3, 3, 3, 3]}
-                    />
+                <GameKitBody args={[x, y, 12, 12]} inertia={Infinity} ref={this.bodyRef}>
+                    <div style={this.getSpriteWrapperStyle()}>
+                        <Sprite
+                            tileHeight={24}
+                            tileWidth={16}
+                            key={this.state.isMoving.toString()}
+                            repeat={this.state.isMoving}
+                            src="tiles/kavi.png"
+                            scale={1}
+                            state={this.state.spriteState}
+                            steps={[3, 3, 3, 3]}
+                        />
+                    </div>
                 </GameKitBody>
             </div>
         );
