@@ -97,8 +97,6 @@ export class TiledMap extends React.Component<Props> {
     const {
       tsxJs: { columns: cols, tileheight, tilewidth, spacing }
     } = this.props;
-    const { scale } = this.context;
-
     const flip_horiz = 0x80000000 & tileIndex;
     const flip_vert = 0x40000000 & tileIndex;
     const flip_diag = 0x20000000 & tileIndex;
@@ -107,8 +105,8 @@ export class TiledMap extends React.Component<Props> {
     const tileX = realTileIndex % cols;
     const tileY = Math.floor(realTileIndex / cols);
 
-    const posX = x * tilewidth * scale;
-    const posY = y * tileheight * scale;
+    const posX = x * tilewidth;
+    const posY = y * tileheight;
 
     const imageWrapperStyle: React.CSSProperties = {
       height: tileheight,
@@ -118,8 +116,8 @@ export class TiledMap extends React.Component<Props> {
       zIndex: l,
       transform:
         `translate(${posX}px, ${posY}px) ` +
-        ` scaleX(${(flip_horiz ? -1 : 1) * scale}) ` +
-        ` scaleY(${(flip_vert ? -1 : 1) * scale}) ` +
+        ` scaleX(${(flip_horiz ? -1 : 1)}) ` +
+        ` scaleY(${(flip_vert ? -1 : 1)}) ` +
         `${!flip_diag ? "" : " rotate(90deg) scaleY(-1)"}`
     };
 
@@ -156,7 +154,8 @@ export class TiledMap extends React.Component<Props> {
     return {
       position: "absolute",
       top: 0,
-      left: 0
+      left: 0,
+      transform: `scaleX(${this.context.scale}) scaleY(${this.context.scale})`
     } as React.CSSProperties;
   }
 
