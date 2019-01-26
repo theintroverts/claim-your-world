@@ -132,10 +132,30 @@ export function layerToRects(layer: Layer, { tilewidth, tileheight }: TmxJson): 
     }));
 }
 
+export enum COLLISION_GROUP {
+    PLAYER = 0,
+    OTHER = -1,
+}
+
+export enum COLLISION_CATEGORY {
+    ALL = -1,
+    PLAYER = 1,
+    WALL = 2,
+    OBJECT = 4,
+}
+
 export function extractTmxCollisionComposite(tmx: TmxJson): Composite {
     const composite = Composite.create();
+    const options = {
+        isStatic: true,
+        collisionFilter: {
+            group: COLLISION_GROUP.OTHER,
+            category: COLLISION_CATEGORY.WALL,
+            mask: COLLISION_CATEGORY.PLAYER,
+        },
+    };
 
-    const buildRect = (x: number, y: number, width: number, height: number, options = { isStatic: true }) =>
+    const buildRect = (x: number, y: number, width: number, height: number) =>
         Bodies.rectangle(x + width / 2, y + height / 2, width, height, options);
 
     for (const layer of tmx.layers) {
