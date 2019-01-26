@@ -5,6 +5,7 @@ import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
 
 interface EnergySourceData {
     createdAt: Date;
+    radius: number;
     energyAmount: number;
     playerGainDelta: number;
     lossDelta: number;
@@ -12,11 +13,11 @@ interface EnergySourceData {
 
 export const createEnergySource = (
     data: Omit<EnergySourceData, 'createdAt'>,
-    { world, x, y, radius }: { world: Matter.World; x: number; y: number; radius: number }
+    { world, x, y }: { world: Matter.World; x: number; y: number }
 ): Matter.Body => {
     const fullData = { ...data, createdAt: new Date() };
 
-    const body = Matter.Bodies.circle(x, y, radius, {
+    const body = Matter.Bodies.circle(x, y, data.radius, {
         isSensor: true,
         isStatic: false,
         collisionFilter: {

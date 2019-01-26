@@ -1,10 +1,10 @@
 import Matter, { IPair } from 'matter-js';
-import { string } from 'prop-types';
 import React, { Component } from 'react';
-import { Body, KeyListener, World } from 'react-game-kit';
-import { Omit } from 'react-redux';
+import { KeyListener, World } from 'react-game-kit';
+import { connect } from 'react-redux';
 
-import { COLLISION_CATEGORY, COLLISION_GROUP, extractTmxCollisionComposite, TileData } from '../util/layer';
+import { playerStats } from '../store';
+import { extractTmxCollisionComposite, TileData } from '../util/layer';
 import Character from './Character';
 import { Debug } from './Debug';
 import { createEnergySource, getEnergySourceData } from './energySources';
@@ -13,9 +13,11 @@ import Level from './Level';
 export interface Prop {
     keyListener: KeyListener;
     tileData: TileData;
+
+    modifyEnergy: (energy: number) => void;
 }
 
-export default class IntroWorld extends Component<Prop> {
+class IntroWorld extends Component<Prop> {
     render() {
         return (
             <World onInit={this.physicsInit}>
@@ -32,13 +34,37 @@ export default class IntroWorld extends Component<Prop> {
         Matter.World.addComposite(engine.world, collision);
 
         createEnergySource(
-            { energyAmount: Number.POSITIVE_INFINITY, playerGainDelta: 1, lossDelta: 0 },
-            { x: 2500, y: 800, radius: 75, world: engine.world }
+            { radius: 75, energyAmount: Number.POSITIVE_INFINITY, playerGainDelta: 0.01, lossDelta: 0 },
+            { x: 2500, y: 800, world: engine.world }
         );
+
         Matter.Events.on(engine, 'collisionActive', (e: any) => {
+            let scoreModification = 0;
             for (const pair of (e.pairs || []) as Array<IPair>) {
-                console.log(getEnergySourceData(e.bodyA), getEnergySourceData(e.bodyB));
+                const energySourceData = getEnergySourceData(pair.bodyA) || getEnergySourceData(pair.bodyB);
+                if (energySourceData === undefined) {
+                    continue;
+                }
+
+                const distance = Math.sqrt(
+                    (pair.bodyA.position.x - pair.bodyB.position.x) ** 2 +
+                        (pair.bodyA.position.y - pair.bodyB.position.y) ** 2
+                );
+
+                const factor = Math.max(0, energySourceData.radius - distance) / distance;
+                scoreModification += energySourceData.playerGainDelta * factor;
+            }
+
+            if (scoreModification !== 0) {
+                this.props.modifyEnergy(scoreModification);
             }
         });
     };
 }
+
+export default connect(
+    undefined,
+    {
+        modifyEnergy: playerStats.actions.modifyEnergy,
+    }
+)(IntroWorld);
