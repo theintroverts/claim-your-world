@@ -14,8 +14,8 @@ export const playerStats = createSlice({
 export const playerLocation = createSlice({
     slice: 'playerLocation',
     initialState: {
-        x: 50,
-        y: 50,
+        x: 2500,
+        y: 750,
     },
     reducers: {
         setCharacterPosition: (state, { payload: { x, y } }: PayloadAction<{ x: number; y: number }>) => ({ x, y }),

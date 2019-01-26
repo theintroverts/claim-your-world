@@ -15,6 +15,7 @@ export default class Game extends Component {
             this.keyListener.RIGHT,
             this.keyListener.UP,
             this.keyListener.DOWN,
+            80,
         ]);
     }
 

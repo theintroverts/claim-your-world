@@ -4,6 +4,7 @@ import { KeyListener, World } from 'react-game-kit';
 
 import { extractTmxCollisionComposite, TileData } from '../util/layer';
 import Character from './Character';
+import { Debug } from './Debug';
 import Level from './Level';
 
 export interface Prop {
@@ -17,6 +18,7 @@ export default class IntroWorld extends Component<Prop> {
             <World onInit={this.physicsInit}>
                 <Level tileData={this.props.tileData} />
                 <Character keys={this.props.keyListener} />
+                <Debug {...this.props.tileData} keys={this.props.keyListener} />
             </World>
         );
     }

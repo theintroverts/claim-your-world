@@ -60,7 +60,7 @@ interface Rect {
     height: number;
 }
 
-export function layerToComposite(layer: Layer, { tilewidth, tileheight }: TmxJson): Composite {
+export function layerToRects(layer: Layer, { tilewidth, tileheight }: TmxJson): Rect[] {
     const composite = Composite.create();
 
     const rectMap: Array<Array<Rect>> = [];
@@ -71,15 +71,6 @@ export function layerToComposite(layer: Layer, { tilewidth, tileheight }: TmxJso
         }
         rectMap[y][x] = rect;
     };
-
-    const buildRect = (x: number, y: number, width: number, height: number, options = { isStatic: true }) =>
-        Bodies.rectangle(
-            (x + width / 2) * tilewidth,
-            (y + height / 2) * tileheight,
-            width * tilewidth,
-            height * tileheight,
-            options
-        );
 
     for (let dy = 0; dy < layer.height; dy++) {
         for (let dx = 0; dx < layer.width; dx++) {
@@ -122,17 +113,26 @@ export function layerToComposite(layer: Layer, { tilewidth, tileheight }: TmxJso
             }
         }
     }
-    acc.forEach(rect => Composite.add(composite, buildRect(rect.x, rect.y, rect.width, rect.height)));
 
-    return composite;
+    return acc.map(({ x, y, width, height }) => ({
+        x: x * tilewidth,
+        y: y * tileheight,
+        width: width * tilewidth,
+        height: height * tileheight,
+    }));
 }
 
 export function extractTmxCollisionComposite(tmx: TmxJson): Composite {
     const composite = Composite.create();
 
+    const buildRect = (x: number, y: number, width: number, height: number, options = { isStatic: true }) =>
+        Bodies.rectangle(x + width / 2, y + height / 2, width, height, options);
+
     for (const layer of tmx.layers) {
         if (layer.name.includes('collision')) {
-            Composite.add(composite, layerToComposite(layer, tmx));
+            layerToRects(layer, tmx).forEach(rect =>
+                Composite.add(composite, buildRect(rect.x, rect.y, rect.width, rect.height))
+            );
         }
     }
     return composite;
