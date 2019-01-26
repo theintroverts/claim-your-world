@@ -111,15 +111,16 @@ export class TiledMap extends React.Component<Props> {
     const posY = y * tileheight * scale;
 
     const imageWrapperStyle: React.CSSProperties = {
-      height: tileheight * scale,
-      width: tilewidth * scale,
+      height: tileheight,
+      width: tilewidth,
       overflow: "hidden",
       position: "absolute",
       zIndex: l,
       transform:
         `translate(${posX}px, ${posY}px) ` +
-        ` ${flip_horiz ? "scaleX(-1)" : ""} ` +
-        ` ${flip_vert ? "scaleY(-1)" : ""} `
+        ` scaleX(${(flip_horiz ? -1 : 1) * scale}) ` +
+        ` scaleY(${(flip_vert ? -1 : 1) * scale}) ` +
+        `${!flip_diag ? "" : " rotate(90deg) scaleY(-1)"}`
     };
 
     const left = tileX * (tilewidth + spacing);
