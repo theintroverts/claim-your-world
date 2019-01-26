@@ -9,10 +9,12 @@ export interface Props {
 
 const GameStats: FunctionComponent<Props> = props => (
     <table>
-        <tr>
-            <td>Enery Level</td>
-            <td>{props.energy.toFixed(1)}</td>
-        </tr>
+		<tbody>
+			<tr>
+				<td>Enery Level</td>
+				<td>{props.energy.toFixed(1)}</td>
+			</tr>
+		</tbody>
     </table>
 );
 
