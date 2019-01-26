@@ -57,41 +57,113 @@ const tsxJs: TsxJson = require("../assets/ClaimYourWorld.tsx.json");
 </svg>
 */
 
-export class TiledMap extends React.Component<{
+type Props = {
   tmxJs: TmxJson;
   tsxJs: TsxJson;
-}> {
+};
+
+export class TiledMap extends React.Component<Props> {
   static defaultProps = { tmxJs, tsxJs };
 
-  render() {
-    return <svg>{this.getTile({ x: 0, y: 0 }, 836)}</svg>;
+  shouldComponentUpdate(nextProps: Props, nextState: {}, nextContext: any) {
+    return this.context.scale !== nextContext.scale;
   }
 
-  getTile(targetPosition: { x: number; y: number }, tileIndex: number = 836) {
-    const tileSize = 16;
-    const gap = 1;
-    const cols = 37;
-    const rows = 28;
+  generateMap() {
+    const {
+      tmxJs: { layers, width, height }
+    } = this.props;
+
+    const mappedLayers: React.ReactNode[] = [];
+
+    for (const layer of layers) {
+      for (let x = 0; x < height; x++) {
+        for (let y = 0; y < width; y++) {
+          const gridIndex = x * width + y;
+          if (layer.data[gridIndex] === 0) {
+            continue;
+          }
+          mappedLayers.push(
+            this.getTile({ x, y }, layer.data[gridIndex], layer.name)
+          );
+        }
+      }
+    }
+
+    return mappedLayers;
+  }
+
+  getTile(
+    { x, y }: { x: number; y: number },
+    tileIndex: number,
+    layerId: string
+  ) {
+    const {
+      tsxJs: { columns: cols, tileheight, tilewidth, spacing }
+    } = this.props;
+    const { scale } = this.context;
 
     const tileX = tileIndex % cols;
     const tileY = Math.floor(tileIndex / cols);
 
-    const left = tileX * (tileSize + gap);
-    const top = tileY * (tileSize + gap);
+    const left = tileX * (tilewidth + spacing) * scale;
+    const top = tileY * (tileheight + spacing) * scale;
+
+    const imageWrapperStyle: React.CSSProperties = {
+      height: tileheight * scale,
+      width: tilewidth * scale,
+      overflow: "hidden",
+      position: "absolute",
+      transform: `translate(${left}px, ${top}px)`
+    };
+
+    const imageStyle: React.CSSProperties = {
+      position: "absolute",
+      imageRendering: "pixelated",
+      display: "block",
+      height: "100%",
+      transform: `translate(-${left}px, -${top}px)`
+    };
 
     return (
-      <image
-        href={this.tileFileName}
-        x={0}
-        y={0}
-        width={16}
-        height={16}
-        transform={`translate(-${left} -${top})`}
-      />
+      <div key={`tile-${layerId}-${x}-${y}`} style={imageWrapperStyle}>
+        <img style={imageStyle} src={this.tileFileName} />,
+      </div>
     );
   }
 
   get tileFileName() {
     return `tiles/${this.props.tsxJs.image}`;
+  }
+
+  getLayerStyles() {
+    return {
+      position: "absolute",
+      top: 0,
+      left: 0
+    } as React.CSSProperties;
+  }
+
+  getWrapperStyles() {
+    return {
+      position: "absolute",
+      top: 0,
+      left: 0
+    } as React.CSSProperties;
+  }
+
+  render() {
+    const layers = this.generateMap();
+    return (
+      <div style={{ ...this.getWrapperStyles() }}>
+        {layers.map((layer, index) => {
+          return (
+            <div key={`layer-${index}`} style={this.getLayerStyles()}>
+              {layer}
+            </div>
+          );
+        })}
+      </div>
+    );
   }
 }
