@@ -28,6 +28,14 @@
          "height":250,
          "name":"collision01",
          "opacity":1,
+         "properties":
+            {
+             "collision":true
+            },
+         "propertytypes":
+            {
+             "collision":"bool"
+            },
          "type":"tilelayer",
          "visible":true,
          "width":250,
@@ -61,6 +69,14 @@
          "height":250,
          "name":"collision02",
          "opacity":1,
+         "properties":
+            {
+             "collision":true
+            },
+         "propertytypes":
+            {
+             "collision":"bool"
+            },
          "type":"tilelayer",
          "visible":true,
          "width":250,
