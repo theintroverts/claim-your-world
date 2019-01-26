@@ -158,20 +158,15 @@ export class TiledMap extends React.Component<Props, State> {
         return `tiles/${this.props.tsxJs.image}`;
     }
 
-    getWrapperStyles() {
+    getWrapperStyles(): React.CSSProperties {
         return {
             position: 'absolute',
             top: 0,
             left: 0,
-            transform: `scaleX(${this.context.scale}) scaleY(${this.context.scale})`,
-        } as React.CSSProperties;
+        };
     }
 
     render() {
-        if (!this.context.scale) {
-            return null;
-        }
-
         const {
             tmxJs: { layers },
         } = this.props;
@@ -203,8 +198,4 @@ export class TiledMap extends React.Component<Props, State> {
 
     private canvasLayers = this.props.tmxJs.layers.map(() => React.createRef<HTMLCanvasElement>());
     private lastDrawnCanvasLayers: HTMLCanvasElement[] = new Array(this.props.tmxJs.layers.length);
-
-    static contextTypes = {
-        scale: PropTypes.number,
-    };
 }
