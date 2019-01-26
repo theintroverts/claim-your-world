@@ -1,10 +1,13 @@
-import Matter from 'matter-js';
+import Matter, { IPair } from 'matter-js';
+import { string } from 'prop-types';
 import React, { Component } from 'react';
-import { KeyListener, World } from 'react-game-kit';
+import { Body, KeyListener, World } from 'react-game-kit';
+import { Omit } from 'react-redux';
 
 import { COLLISION_CATEGORY, COLLISION_GROUP, extractTmxCollisionComposite, TileData } from '../util/layer';
 import Character from './Character';
 import { Debug } from './Debug';
+import { createEnergySource, getEnergySourceData } from './energySources';
 import Level from './Level';
 
 export interface Prop {
@@ -28,19 +31,14 @@ export default class IntroWorld extends Component<Prop> {
         const collision = extractTmxCollisionComposite(this.props.tileData.tmxJs);
         Matter.World.addComposite(engine.world, collision);
 
-        Matter.World.addBody(
-            engine.world,
-            Matter.Bodies.circle(3000, 650, 100, {
-                isSensor: true,
-                isStatic: false,
-                collisionFilter: {
-                    group: COLLISION_GROUP.OTHER,
-                    category: COLLISION_CATEGORY.OBJECT,
-                    mask: COLLISION_CATEGORY.PLAYER,
-                },
-            })
+        createEnergySource(
+            { energyAmount: Number.POSITIVE_INFINITY, playerGainDelta: 1, lossDelta: 0 },
+            { x: 2500, y: 800, radius: 75, world: engine.world }
         );
-
-        Matter.Events.on(engine, 'collisionActive', (e: any) => console.log(...e.pairs));
+        Matter.Events.on(engine, 'collisionActive', (e: any) => {
+            for (const pair of (e.pairs || []) as Array<IPair>) {
+                console.log(getEnergySourceData(e.bodyA), getEnergySourceData(e.bodyB));
+            }
+        });
     };
 }
