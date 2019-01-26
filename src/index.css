@@ -14,3 +14,29 @@ body,
 * {
   box-sizing: border-box;
 }
+
+.game-stats-wrapper {
+	background: url('assets/beams/BeamHeart_LightBrown_middle.png');
+	max-height: 39px;
+}
+
+.game-stats-wrapper::before,
+.game-stats-wrapper::after {
+	height: 39px;
+	width: 39px;
+	display: block;
+	content: ' ';
+	position: absolute;
+}
+
+.game-stats-wrapper::before {
+	background: url('assets/beams/BeamHeart_LightBrown_left.png');
+	left: -39px;
+	top: 0;
+}
+
+.game-stats-wrapper::after {
+	background: url('assets/beams/BeamHeart_LightBrown_right.png');
+	right: -39px;
+	top: 0;
+}

@@ -46,7 +46,8 @@ class Game extends Component<Props> {
                             <IntroWorld keyListener={this.keyListener} tileData={{ tmxJs, tsxJs }} />
                         </Viewport>
 
-                        <div style={this.getGameStatsWrapperStyles()}>
+						<div style={{"background": "url('beams/BeamHeart_LightBrown_right.png')"}}></div>
+                        <div className="game-stats-wrapper" style={this.getGameStatsWrapperStyles()}>
                             <GameStats />
                         </div>
                     </Scalator>
@@ -64,9 +65,8 @@ class Game extends Component<Props> {
     getGameStatsWrapperStyles(): React.CSSProperties {
         return {
             position: 'absolute',
-            background: 'pink',
             fontSize: '16pt',
-            left: 586,
+            left: 547,
             top: 350,
             width: 194,
             height: 80,
