@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { KeyListener, Loop, Stage } from 'react-game-kit';
 
 import { TmxJson, TsxJson } from '../util/layer';
+import GameStats from './GameStats';
 import IntroWorld from './IntroWorld';
 import Scalator from './Scalator';
 import Viewport from './Viewport';
@@ -32,6 +33,10 @@ export default class Game extends Component {
                         <Viewport width={800} height={450}>
                             <IntroWorld keyListener={this.keyListener} tileData={{ tmxJs, tsxJs }} />
                         </Viewport>
+
+                        <div style={this.getGameStatsWrapperStyles()}>
+                            <GameStats />
+                        </div>
                     </Scalator>
                 </Stage>
             </Loop>
@@ -41,6 +46,17 @@ export default class Game extends Component {
     getStageStyles(): React.CSSProperties {
         return {
             background: '#3a9bdc',
+        };
+    }
+
+    getGameStatsWrapperStyles(): React.CSSProperties {
+        return {
+            position: 'absolute',
+            background: 'pink',
+            left: 586,
+            top: 350,
+            width: 194,
+            height: 80,
         };
     }
 
