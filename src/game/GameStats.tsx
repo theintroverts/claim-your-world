@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 
 import { State } from '../store';
+import { PixelFont } from './PixelFont';
 
 export interface Props {
     energy: number;
@@ -9,12 +10,16 @@ export interface Props {
 
 const GameStats: FunctionComponent<Props> = props => (
     <table>
-		<tbody>
-			<tr>
-				<td>Enery Level</td>
-				<td>{props.energy.toFixed(1)}</td>
-			</tr>
-		</tbody>
+        <tbody>
+            <tr>
+                <td>
+                    <PixelFont text="Energy Level" />
+                </td>
+                <td>
+                    <PixelFont text={props.energy.toFixed(1)} />
+                </td>
+            </tr>
+        </tbody>
     </table>
 );
 

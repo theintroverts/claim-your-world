@@ -9,6 +9,7 @@ import Character from './Character';
 import { Debug } from './Debug';
 import { createEnergySource, getEnergySourceData } from './energySources';
 import Level from './Level';
+import { PixelFont } from './PixelFont';
 
 export interface Prop {
     keyListener: KeyListener;
