@@ -74,13 +74,24 @@ class Character extends React.Component<Props> {
         };
     }
 
+    getCharacterProps(): React.CSSProperties {
+        return {
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: 34,
+            height: 64,
+            transform: 'translateX(-1px) translateY(-32px)',
+        };
+    }
+
     render() {
         const { x, y } = this.props;
 
         return (
             <div style={this.getWrapperStyles()}>
                 <GameKitBody args={[x, y, 32, 32]} inertia={Infinity} ref={this.bodyRef}>
-                    <img src="dude.png" style={{ transform: 'translateX(-1px) translateY(-60px)' }} />
+                    <img src="dude.png" style={this.getCharacterProps()} />
                 </GameKitBody>
             </div>
         );
