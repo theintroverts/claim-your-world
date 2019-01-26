@@ -10,6 +10,7 @@
 
 # production
 /build
+/build-ignore
 
 # misc
 .DS_Store
