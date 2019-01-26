@@ -16,6 +16,7 @@ export interface Props {
 
 export interface CharacterState {
     spriteState: number;
+    isMoving: boolean;
 }
 
 class Character extends React.Component<Props, CharacterState> {
@@ -29,6 +30,7 @@ class Character extends React.Component<Props, CharacterState> {
 
         this.state = {
             spriteState: 0,
+            isMoving: false,
         };
     }
     componentDidMount() {
@@ -42,7 +44,8 @@ class Character extends React.Component<Props, CharacterState> {
     move = (x: number, y: number) => {
         const body = this.bodyRef.current;
         if (body && body.body) {
-            Matter.Body.setVelocity(body.body as any, { x, y });
+            Matter.Body.setVelocity(body.body, { x, y });
+            this.setState({ isMoving: x !== 0 || y !== 0 });
         }
     };
 
@@ -130,7 +133,8 @@ class Character extends React.Component<Props, CharacterState> {
                     <Sprite
                         tileHeight={24}
                         tileWidth={16}
-                        repeat={true}
+                        key={this.state.isMoving.toString()}
+                        repeat={this.state.isMoving}
                         src="tiles/kavi.png"
                         scale={1}
                         state={this.state.spriteState}
