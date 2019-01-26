@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
 import Matter from 'matter-js';
+import React, { Component } from 'react';
+import { KeyListener, Loop, Stage, World } from 'react-game-kit';
 
-import { Loop, Stage, KeyListener, World } from 'react-game-kit';
-import Level from './level';
+import Level from './Level';
 
 export default class Game extends Component {
     componentDidMount() {
