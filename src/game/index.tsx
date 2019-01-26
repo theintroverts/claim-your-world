@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Matter from "matter-js";
 
-import { AudioPlayer, Loop, Stage, KeyListener, World } from "react-game-kit";
+import { Loop, Stage, KeyListener, World } from "react-game-kit";
 import Level from "./level";
 
 export default class Game extends Component {
