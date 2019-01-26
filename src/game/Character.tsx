@@ -1,7 +1,7 @@
 import Matter from 'matter-js';
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import { Body, KeyListener } from 'react-game-kit';
+import { Body as GameKitBody, KeyListener } from 'react-game-kit';
 import { connect } from 'react-redux';
 
 import { playerLocation, State } from '../store';
@@ -73,14 +73,14 @@ class Character extends React.Component<Props> {
 
         return (
             <div style={this.getWrapperStyles()}>
-                <Body args={[x, y, 34, 64]} inertia={Infinity} ref={this.bodyRef}>
+                <GameKitBody args={[x, y, 34, 64]} inertia={Infinity} ref={this.bodyRef}>
                     <img src="dude.png" />
-                </Body>
+                </GameKitBody>
             </div>
         );
     }
 
-    private bodyRef = React.createRef<Body>();
+    private bodyRef = React.createRef<GameKitBody>();
 }
 
 export default connect(

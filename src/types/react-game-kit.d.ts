@@ -1,5 +1,6 @@
 declare module 'react-game-kit' {
     import { ComponentType } from 'react';
+    import { Body as MatterBody } from 'matter-js';
 
     /**
      * The Sprite component lets you define sprite animations using sprite sheets. When creating a sprite sheet, define sprite tile dimensions that will be provided via the tileHeight & tileWidth props. Next, each animation state is represented by a row, with steps of the animation represented as columns.
@@ -32,8 +33,16 @@ declare module 'react-game-kit' {
         unsubscribe(): void;
         isDown(key: number): boolean;
     }
-    export const Body: any;
-    export const TileMap: any;
+
+    declare class Body extends React.Component<{
+        args: number[];
+        inertia: number;
+    }> {
+        body: MatterBody;
+    }
+
+    export const TileMap: React.ComponentType<{}>;
+
     export const World: React.ComponentType<{
         gravity?: number;
         onCollision?: Function;
