@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 
 export interface Layer {
   data: number[];
@@ -84,7 +85,11 @@ export class TiledMap extends React.Component<Props> {
             continue;
           }
           mappedLayers.push(
-            this.getTile({ x, y }, layer.data[gridIndex], layer.name)
+            this.getTile(
+              { x: y, y: x },
+              layer.data[gridIndex] & 0xffff,
+              layer.name
+            )
           );
         }
       }
@@ -106,28 +111,30 @@ export class TiledMap extends React.Component<Props> {
     const tileX = tileIndex % cols;
     const tileY = Math.floor(tileIndex / cols);
 
-    const left = tileX * (tilewidth + spacing) * scale;
-    const top = tileY * (tileheight + spacing) * scale;
+    const posX = x * tilewidth * scale;
+    const posY = y * tileheight * scale;
 
     const imageWrapperStyle: React.CSSProperties = {
       height: tileheight * scale,
       width: tilewidth * scale,
       overflow: "hidden",
       position: "absolute",
-      transform: `translate(${left}px, ${top}px)`
+      transform: `translate(${posX}px, ${posY}px)`
     };
+
+    const left = tileX * (tilewidth + spacing) * scale;
+    const top = tileY * (tileheight + spacing) * scale;
 
     const imageStyle: React.CSSProperties = {
       position: "absolute",
       imageRendering: "pixelated",
       display: "block",
-      height: "100%",
       transform: `translate(-${left}px, -${top}px)`
     };
 
     return (
       <div key={`tile-${layerId}-${x}-${y}`} style={imageWrapperStyle}>
-        <img style={imageStyle} src={this.tileFileName} />,
+        <img style={imageStyle} src={this.tileFileName} />
       </div>
     );
   }
@@ -153,6 +160,10 @@ export class TiledMap extends React.Component<Props> {
   }
 
   render() {
+    if (!this.context.scale) {
+      return null;
+    }
+
     const layers = this.generateMap();
     return (
       <div style={{ ...this.getWrapperStyles() }}>
@@ -166,4 +177,8 @@ export class TiledMap extends React.Component<Props> {
       </div>
     );
   }
+
+  static contextTypes = {
+    scale: PropTypes.number
+  };
 }
