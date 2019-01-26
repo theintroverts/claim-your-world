@@ -37,6 +37,7 @@ declare module 'react-game-kit' {
     declare class Body extends React.Component<{
         args: number[];
         inertia: number;
+        [key: string]: any;
     }> {
         body: MatterBody;
     }

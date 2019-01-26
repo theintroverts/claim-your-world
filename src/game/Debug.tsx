@@ -1,9 +1,9 @@
-import Matter from 'matter-js';
+import Matter, { Render } from 'matter-js';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { KeyListener } from 'react-game-kit';
 
-import { Layer, layerToRects, TmxJson, TsxJson } from '../util/layer';
+import { TmxJson, TsxJson } from '../util/layer';
 
 type Props = {
     tmxJs: TmxJson;
@@ -39,40 +39,6 @@ export class Debug extends React.Component<Props, State> {
         }
     };
 
-    async drawCanvas() {
-        const {
-            tmxJs: { layers },
-        } = this.props;
-
-        for (let l = 0; l < layers.length; l++) {
-            const layer = layers[l];
-            const canvas = this.canvasLayers[l].current;
-            const lastDrawnCanvas = this.lastDrawnCanvasLayers[l];
-            if (canvas && canvas !== lastDrawnCanvas) {
-                const ctx = canvas.getContext('2d');
-                if (!ctx) {
-                    return;
-                }
-                this.drawCanvasLayer(layer, ctx);
-                this.lastDrawnCanvasLayers[l] = canvas;
-            }
-        }
-    }
-
-    drawCanvasLayer(layer: Layer, ctx: CanvasRenderingContext2D) {
-        const rects = layerToRects(layer, this.props.tmxJs);
-
-        for (const { x, y, width, height } of rects) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'red';
-            ctx.rect(x, y, width, height);
-            ctx.stroke();
-            ctx.restore();
-        }
-    }
-
     getWrapperStyles(): React.CSSProperties {
         return {
             position: 'absolute',
@@ -83,40 +49,59 @@ export class Debug extends React.Component<Props, State> {
 
     render() {
         const {
-            tmxJs: { layers, width, tilewidth, height, tileheight },
+            tmxJs: { width, tilewidth, height, tileheight },
         } = this.props;
         const { debugEnabled } = this.state;
 
-        if (!debugEnabled) {
-            return null;
+        if (debugEnabled && this.canvas.current && !this.debugRender) {
+            this.debugRender = Render.create({
+                canvas: this.canvas.current!,
+                engine: this.context.engine,
+                options: {
+                    enabled: true,
+                    width: width * tilewidth,
+                    height: height * tileheight,
+                    pixelRatio: 0.5,
+                    background: false,
+                    wireframeBackground: false,
+                    wireframes: false,
+                    showSleeping: false,
+                    showDebug: false,
+                    showBroadphase: false,
+                    showBounds: false,
+                    showVelocity: true,
+                    showCollisions: true,
+                    showSeparations: false,
+                    showAxes: false,
+                    showPositions: false,
+                    showAngleIndicator: false,
+                    showIds: false,
+                    showShadows: false,
+                    showVertexNumbers: false,
+                    showConvexHulls: false,
+                    showInternalEdges: false,
+                    showMousePosition: false,
+                } as any,
+            });
+            Render.run(this.debugRender);
         }
-
-        this.drawCanvas();
 
         return (
             <div style={{ ...this.getWrapperStyles() }}>
-                {layers.map(
-                    (layer, idx) =>
-                        this.state.visibleLayers.includes(layer.name) && (
-                            <canvas
-                                key={idx}
-                                ref={this.canvasLayers[idx]}
-                                width={width * tilewidth}
-                                height={height * tileheight}
-                                style={{
-                                    width: width * tilewidth,
-                                    height: height * tileheight,
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                }}
-                            />
-                        )
-                )}
+                <canvas
+                    ref={this.canvas}
+                    style={{
+                        width: width * tilewidth,
+                        height: height * tileheight,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                    }}
+                />
             </div>
         );
     }
 
-    private canvasLayers = this.props.tmxJs.layers.map(() => React.createRef<HTMLCanvasElement>());
-    private lastDrawnCanvasLayers: HTMLCanvasElement[] = new Array(this.props.tmxJs.layers.length);
+    private canvas = React.createRef<HTMLCanvasElement>();
+    private debugRender?: Render;
 }

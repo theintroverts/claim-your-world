@@ -5,6 +5,7 @@ import { Body as GameKitBody, KeyListener, Sprite } from 'react-game-kit';
 import { connect } from 'react-redux';
 
 import { playerLocation, playerStats, State } from '../store';
+import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
 
 export interface Props {
     keys: KeyListener;
@@ -133,7 +134,16 @@ class Character extends React.Component<Props, CharacterState> {
 
         return (
             <div style={this.getWrapperStyles()}>
-                <GameKitBody args={[x, y, 12, 12]} inertia={Infinity} ref={this.bodyRef}>
+                <GameKitBody
+                    args={[x, y, 12, 12]}
+                    inertia={Infinity}
+                    ref={this.bodyRef}
+                    collisionFilter={{
+                        group: COLLISION_GROUP.PLAYER,
+                        category: COLLISION_CATEGORY.PLAYER,
+                        mask: COLLISION_CATEGORY.ALL,
+                    }}
+                >
                     <div style={this.getSpriteWrapperStyle()}>
                         <Sprite
                             tileHeight={24}
