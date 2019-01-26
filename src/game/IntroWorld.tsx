@@ -12,8 +12,21 @@ export interface Prop {
 
 export default class IntroWorld extends Component<Prop> {
     static contextTypes = {
+        loop: PropTypes.object,
         scale: PropTypes.number,
     };
+
+    static childContextTypes = {
+        loop: PropTypes.object,
+        scale: PropTypes.number,
+    };
+
+    getChildContext() {
+        return {
+            scale: 1,
+            loop: this.context.loop,
+        };
+    }
 
     getStyles(): React.CSSProperties {
         return {
