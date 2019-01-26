@@ -31,7 +31,7 @@ class Character extends React.Component<Props> {
     move = (x: number, y: number) => {
         const body = this.bodyRef.current;
         if (body && body.body) {
-            Matter.Body.setVelocity(body.body as any, { x: y, y: 0 });
+            Matter.Body.setVelocity(body.body as any, { x, y });
         }
     };
 
@@ -50,13 +50,12 @@ class Character extends React.Component<Props> {
 
     checkKeys = () => {
         const { keys } = this.props;
+        const WALK_SPEED = 3;
 
-        if (keys.isDown(keys.DOWN)) {
-            this.move(0, 5);
-            console.log('down!');
-        } else {
-            this.move(0, 0);
-        }
+        this.move(
+            keys.isDown(keys.LEFT) ? -WALK_SPEED : keys.isDown(keys.RIGHT) ? WALK_SPEED : 0,
+            keys.isDown(keys.UP) ? -WALK_SPEED : keys.isDown(keys.DOWN) ? WALK_SPEED : 0
+        );
     };
 
     getWrapperStyles(): React.CSSProperties {

@@ -11,8 +11,7 @@ export default class Game extends Component {
             this.keyListener.LEFT,
             this.keyListener.RIGHT,
             this.keyListener.UP,
-            this.keyListener.SPACE,
-            65,
+            this.keyListener.DOWN,
         ]);
     }
 
@@ -34,6 +33,8 @@ export default class Game extends Component {
     }
 
     public physicsInit = (engine: Matter.Engine) => {
+        engine.world.gravity.y = 0;
+
         return;
         const ground = Matter.Bodies.rectangle(512 * 3, 448, 1024 * 3, 64, {
             isStatic: true,
