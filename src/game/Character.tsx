@@ -68,9 +68,9 @@ class Character extends React.Component<Props> {
             position: 'absolute',
             left: x,
             top: y,
-            width: 32,
-            height: 32,
-            transform: 'translateX(-16px) translateY(-16px)',
+            width: 16,
+            height: 16,
+            transform: 'translateX(-8px) translateY(-8px)',
         };
     }
 
@@ -79,9 +79,9 @@ class Character extends React.Component<Props> {
             position: 'absolute',
             left: 0,
             top: 0,
-            width: 34,
-            height: 64,
-            transform: 'translateX(-1px) translateY(-32px)',
+            width: 17.5,
+            height: 32,
+            transform: 'translateX(-0.5px) translateY(-16px)',
         };
     }
 
@@ -90,7 +90,7 @@ class Character extends React.Component<Props> {
 
         return (
             <div style={this.getWrapperStyles()}>
-                <GameKitBody args={[x, y, 32, 32]} inertia={Infinity} ref={this.bodyRef}>
+                <GameKitBody args={[x, y, 16, 16]} inertia={Infinity} ref={this.bodyRef}>
                     <img src="dude.png" style={this.getCharacterProps()} />
                 </GameKitBody>
             </div>

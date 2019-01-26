@@ -25,8 +25,8 @@ export default class Game extends Component {
     render() {
         return (
             <Loop>
-                <Stage width={1800} height={600} style={this.getStageStyles()}>
-                    <Viewport width={1800} height={600}>
+                <Stage width={800} height={450} style={this.getStageStyles()}>
+                    <Viewport width={800} height={450}>
                         <IntroWorld keyListener={this.keyListener} tileData={{ tmxJs, tsxJs }} />
                     </Viewport>
                 </Stage>
