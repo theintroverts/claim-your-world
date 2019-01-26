@@ -119,7 +119,7 @@ export class TiledMap extends React.Component<Props, State> {
 
     render() {
         const {
-            tmxJs: { layers },
+            tmxJs: { layers, width, tilewidth, height, tileheight },
         } = this.props;
 
         if (this.tilemapImage && this.state.tilemapLoaded) {
@@ -132,11 +132,11 @@ export class TiledMap extends React.Component<Props, State> {
                     <canvas
                         key={idx}
                         ref={this.canvasLayers[idx]}
-                        width={800}
-                        height={500}
+                        width={width * tilewidth}
+                        height={height * tileheight}
                         style={{
-                            width: 800,
-                            height: 500,
+                            width: width * tilewidth,
+                            height: height * tileheight,
                             position: 'absolute',
                             top: 0,
                             left: 0,
