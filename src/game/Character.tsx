@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Body as GameKitBody, KeyListener, Sprite } from 'react-game-kit';
 import { connect } from 'react-redux';
 
-import { playerLocation, State } from '../store';
+import { playerLocation, playerStats, State } from '../store';
 
 export interface Props {
     keys: KeyListener;
@@ -12,6 +12,7 @@ export interface Props {
     y: number;
 
     setCharacterPosition: (_: { x: number; y: number }) => void;
+    modifyEnergy: (energy: number) => void;
 }
 
 export interface CharacterState {
@@ -35,10 +36,15 @@ class Character extends React.Component<Props, CharacterState> {
     }
     componentDidMount() {
         Matter.Events.on(this.context.engine, 'afterUpdate', this.update);
+        this.modifyEnergyTimerId = window.setInterval(() => this.props.modifyEnergy(-0.125), 250);
     }
 
     componentWillUnmount() {
         Matter.Events.off(this.context.engine, 'afterUpdate', this.update);
+
+        if (this.modifyEnergyTimerId) {
+            window.clearInterval(this.modifyEnergyTimerId);
+        }
     }
 
     move = (x: number, y: number) => {
@@ -146,11 +152,13 @@ class Character extends React.Component<Props, CharacterState> {
     }
 
     private bodyRef = React.createRef<GameKitBody>();
+    private modifyEnergyTimerId: number | undefined;
 }
 
 export default connect(
     ({ playerLocation: { x, y } }: State) => ({ x, y }),
     {
         setCharacterPosition: playerLocation.actions.setCharacterPosition,
+        modifyEnergy: playerStats.actions.modifyEnergy,
     }
 )(Character);

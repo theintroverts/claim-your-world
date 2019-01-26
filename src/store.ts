@@ -7,7 +7,7 @@ export const playerStats = createSlice({
         energy: 100,
     },
     reducers: {
-        setEnergy: (state, { payload: energy }) => ({ energy }),
+        modifyEnergy: (state, { payload: energy }) => ({ energy: state.energy + energy }),
     },
 });
 

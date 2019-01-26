@@ -51,16 +51,22 @@ export class TiledMap extends React.Component<Props, State> {
         const {
             tmxJs: { width, height },
         } = this.props;
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                const gridIndex = y * width + x;
-                if (layer.data[gridIndex] === 0) {
-                    continue;
+        if (layer.data) {
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const gridIndex = y * width + x;
+                    if (layer.data[gridIndex] === 0) {
+                        continue;
+                    }
+                    ctx.save();
+                    this.drawCanvasTile({ x, y }, layer.data[gridIndex], ctx, tileSet, layer);
+                    ctx.restore();
                 }
-                ctx.save();
-                this.drawCanvasTile({ x, y }, layer.data[gridIndex], ctx, tileSet, layer);
-                ctx.restore();
             }
+        }
+        for (const subLayer of layer.layers || []) {
+            console.log('drawing Sublayer', subLayer);
+            this.drawCanvasLayer(subLayer, ctx, tileSet);
         }
     }
 
