@@ -51,69 +51,71 @@ export interface TsxJson {
 const tmxJs: TmxJson = require('../assets/ClaimYourWorld.tmx.json');
 const tsxJs: TsxJson = require('../assets/ClaimYourWorld.tsx.json');
 
-/*
-<svg width="5cm" height="4cm" version="1.1"
-     xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">
-	<image xlink:href="firefox.jpg" x="0" y="0" height="50px" width="50px"/>
-</svg>
-*/
-
 type Props = {
     tmxJs: TmxJson;
     tsxJs: TsxJson;
 };
+type State = {
+    tilemapLoaded: boolean;
+};
 
-export class TiledMap extends React.Component<Props> {
+export class TiledMap extends React.Component<Props, State> {
     static defaultProps = { tmxJs, tsxJs };
-    private canvas = React.createRef<HTMLCanvasElement>();
-    private lastDrawnCanvas?: HTMLCanvasElement;
+    state = { tilemapLoaded: false };
+    tilemapImage?: HTMLImageElement;
 
-    shouldComponentUpdate(nextProps: Props, nextState: {}, nextContext: any) {
-        return this.context.scale !== nextContext.scale;
+    componentDidMount() {
+        if (!this.tilemapImage) {
+            this.setState({
+                tilemapLoaded: false,
+            });
+            const img = document.createElement('img');
+            img.src = this.tileFileName;
+            img.onload = () => this.setState({ tilemapLoaded: true });
+            this.tilemapImage = img;
+        }
     }
 
-    async drawCanvas() {
-        console.log('draw');
-        const canvas = this.canvas.current;
-        if (!canvas) {
-            return;
-        }
-
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-            return;
-        }
-
-        this.lastDrawnCanvas = canvas;
-
+    async drawCanvas(tileSet: HTMLImageElement) {
         const {
-            tmxJs: { layers, width, height },
+            tmxJs: { layers },
         } = this.props;
 
-        const img = document.createElement('img');
-        img.src = this.tileFileName;
-        img.onload = () => {
-            for (let l = 0; l < layers.length; l++) {
-                const layer = layers[l];
-                for (let y = 0; y < height; y++) {
-                    for (let x = 0; x < width; x++) {
-                        const gridIndex = y * width + x;
-                        if (layer.data[gridIndex] === 0) {
-                            continue;
-                        }
-                        ctx.save();
-                        this.drawCanvasTile({ x, y }, layer.data[gridIndex], l, ctx, img);
-                        ctx.restore();
-                    }
+        for (let l = 0; l < layers.length; l++) {
+            const layer = layers[l];
+            const canvas = this.canvasLayers[l].current;
+            const lastDrawnCanvas = this.lastDrawnCanvasLayers[l];
+            if (canvas && canvas !== lastDrawnCanvas) {
+                const ctx = canvas.getContext('2d');
+                if (!ctx) {
+                    return;
                 }
+                this.drawCanvasLayer(layer, ctx, tileSet);
+                this.lastDrawnCanvasLayers[l] = canvas;
             }
-        };
+        }
+    }
+
+    drawCanvasLayer(layer: Layer, ctx: CanvasRenderingContext2D, tileSet: HTMLImageElement) {
+        const {
+            tmxJs: { width, height },
+        } = this.props;
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const gridIndex = y * width + x;
+                if (layer.data[gridIndex] === 0) {
+                    continue;
+                }
+                ctx.save();
+                this.drawCanvasTile({ x, y }, layer.data[gridIndex], ctx, tileSet);
+                ctx.restore();
+            }
+        }
     }
 
     drawCanvasTile(
         { x, y }: { x: number; y: number },
         tileIndex: number,
-        l: number,
         ctx: CanvasRenderingContext2D,
         tileset: HTMLImageElement
     ) {
@@ -170,16 +172,37 @@ export class TiledMap extends React.Component<Props> {
             return null;
         }
 
-        if (this.canvas.current && this.canvas.current !== this.lastDrawnCanvas) {
-            this.drawCanvas();
+        const {
+            tmxJs: { layers },
+        } = this.props;
+
+        if (this.tilemapImage && this.state.tilemapLoaded) {
+            this.drawCanvas(this.tilemapImage);
         }
 
         return (
             <div style={{ ...this.getWrapperStyles() }}>
-                <canvas ref={this.canvas} width={800} height={500} style={{ width: 800, height: 500 }} />
+                {layers.map((layer, idx) => (
+                    <canvas
+                        key={idx}
+                        ref={this.canvasLayers[idx]}
+                        width={800}
+                        height={500}
+                        style={{
+                            width: 800,
+                            height: 500,
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                        }}
+                    />
+                ))}
             </div>
         );
     }
+
+    private canvasLayers = this.props.tmxJs.layers.map(() => React.createRef<HTMLCanvasElement>());
+    private lastDrawnCanvasLayers: HTMLCanvasElement[] = new Array(this.props.tmxJs.layers.length);
 
     static contextTypes = {
         scale: PropTypes.number,
