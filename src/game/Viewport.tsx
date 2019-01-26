@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -18,16 +17,6 @@ export interface State {
 }
 
 class Viewport extends React.Component<Props, State> {
-    static contextTypes = {
-        loop: PropTypes.object,
-        scale: PropTypes.number,
-    };
-
-    static childContextTypes = {
-        loop: PropTypes.object,
-        scale: PropTypes.number,
-    };
-
     static getDerivedStateFromProps(props: Props, state: State): State {
         const displayX = props.playerX - state.left;
         const displayY = props.playerY - state.top;
@@ -77,17 +66,9 @@ class Viewport extends React.Component<Props, State> {
         window.removeEventListener('resize', this.resizeHandler);
     }
 
-    getChildContext() {
-        return {
-            scale: 1,
-            loop: this.context.loop,
-        };
-    }
-
     getStyles(): React.CSSProperties {
         return {
-            transform: `scaleX(${this.context.scale}) scaleY(${this.context.scale}) translate(${-this.state
-                .left}px, ${-this.state.top}px) `,
+            transform: `translate(${-this.state.left}px, ${-this.state.top}px) `,
             transformOrigin: 'top left',
         };
     }
