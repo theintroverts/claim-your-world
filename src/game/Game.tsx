@@ -65,6 +65,7 @@ class Game extends Component<Props> {
         return {
             position: 'absolute',
             background: 'pink',
+            fontSize: '16pt',
             left: 586,
             top: 350,
             width: 194,
