@@ -1,7 +1,7 @@
 import Matter from 'matter-js';
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import { Body as GameKitBody, KeyListener } from 'react-game-kit';
+import { Body as GameKitBody, KeyListener, Sprite } from 'react-game-kit';
 import { connect } from 'react-redux';
 
 import { playerLocation, State } from '../store';
@@ -14,12 +14,23 @@ export interface Props {
     setCharacterPosition: (_: { x: number; y: number }) => void;
 }
 
-class Character extends React.Component<Props> {
+export interface CharacterState {
+    spriteState: number;
+}
+
+class Character extends React.Component<Props, CharacterState> {
     static contextTypes = {
         engine: PropTypes.object,
         scale: PropTypes.number,
     };
 
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            spriteState: 0,
+        };
+    }
     componentDidMount() {
         Matter.Events.on(this.context.engine, 'afterUpdate', this.update);
     }
@@ -55,10 +66,35 @@ class Character extends React.Component<Props> {
         const { keys } = this.props;
         const WALK_SPEED = 3;
 
-        this.move(
-            keys.isDown(keys.LEFT) ? -WALK_SPEED : keys.isDown(keys.RIGHT) ? WALK_SPEED : 0,
-            keys.isDown(keys.UP) ? -WALK_SPEED : keys.isDown(keys.DOWN) ? WALK_SPEED : 0
-        );
+        let velocityX = 0;
+        let velocityY = 0;
+        let spriteState: number | undefined;
+
+        if (keys.isDown(keys.LEFT)) {
+            velocityX = -WALK_SPEED;
+            spriteState = 1;
+        }
+
+        if (keys.isDown(keys.RIGHT)) {
+            velocityX = WALK_SPEED;
+            spriteState = 2;
+        }
+
+        if (keys.isDown(keys.UP)) {
+            velocityY = -WALK_SPEED;
+            spriteState = 3;
+        }
+
+        if (keys.isDown(keys.DOWN)) {
+            velocityY = WALK_SPEED;
+            spriteState = 0;
+        }
+
+        if (spriteState !== undefined) {
+            this.setState({ spriteState });
+        }
+
+        this.move(velocityX, velocityY);
     };
 
     getWrapperStyles(): React.CSSProperties {
@@ -91,7 +127,15 @@ class Character extends React.Component<Props> {
         return (
             <div style={this.getWrapperStyles()}>
                 <GameKitBody args={[x, y, 16, 16]} inertia={Infinity} ref={this.bodyRef}>
-                    <img src="dude.png" style={this.getCharacterProps()} />
+                    <Sprite
+                        tileHeight={24}
+                        tileWidth={16}
+                        repeat={true}
+                        src="tiles/kavi.png"
+                        scale={1}
+                        state={this.state.spriteState}
+                        steps={[3, 3, 3, 3]}
+                    />
                 </GameKitBody>
             </div>
         );
