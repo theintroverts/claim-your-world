@@ -1,21 +1,24 @@
 import Matter, { IPair } from 'matter-js';
 import React, { Component } from 'react';
 import { KeyListener, World } from 'react-game-kit';
-import { connect } from 'react-redux';
+import { connect, Omit } from 'react-redux';
 
-import { playerStats } from '../store';
+import { energySources, playerStats, State } from '../store';
 import { extractTmxCollisionComposite, TileData } from '../util/layer';
 import Character from './Character';
 import { Debug } from './Debug';
-import { createEnergySource, getEnergySourceData } from './energySources';
+import EnergySource from './EnergySource';
+import { EnergySourceData, getEnergySourceData } from './energySources';
 import Level from './Level';
 import { PixelFont } from './PixelFont';
 
 export interface Prop {
     keyListener: KeyListener;
     tileData: TileData;
+    energySources: Array<EnergySourceData>;
 
     modifyEnergy: (energy: number) => void;
+    addEnergySource: (x: Omit<EnergySourceData, 'createdAt'>) => void;
 }
 
 class IntroWorld extends Component<Prop> {
@@ -24,6 +27,9 @@ class IntroWorld extends Component<Prop> {
             <World onInit={this.physicsInit}>
                 <Level tileData={this.props.tileData} />
                 <Debug {...this.props.tileData} keys={this.props.keyListener} />
+                {this.props.energySources.map(x => (
+                    <EnergySource key={x.createdAt.toString()} {...x} />
+                ))}
                 <Character keys={this.props.keyListener} />
             </World>
         );
@@ -34,10 +40,14 @@ class IntroWorld extends Component<Prop> {
         const collision = extractTmxCollisionComposite(this.props.tileData.tmxJs);
         Matter.World.addComposite(engine.world, collision);
 
-        createEnergySource(
-            { radius: 75, energyAmount: Number.POSITIVE_INFINITY, playerGainDelta: 0.01, lossDelta: 0 },
-            { x: 2500, y: 800, world: engine.world }
-        );
+        this.props.addEnergySource({
+            x: 2600,
+            y: 710,
+            radius: 75,
+            energyAmount: Number.POSITIVE_INFINITY,
+            playerGainDelta: 0.01,
+            lossDelta: 0,
+        });
 
         Matter.Events.on(engine, 'collisionActive', (e: any) => {
             let scoreModification = 0;
@@ -64,8 +74,9 @@ class IntroWorld extends Component<Prop> {
 }
 
 export default connect(
-    undefined,
+    ({ energySources }: State) => ({ energySources }),
     {
         modifyEnergy: playerStats.actions.modifyEnergy,
+        addEnergySource: energySources.actions.addEnergySource,
     }
 )(IntroWorld);

@@ -24,7 +24,6 @@ export interface CharacterState {
 class Character extends React.Component<Props, CharacterState> {
     static contextTypes = {
         engine: PropTypes.object,
-        scale: PropTypes.number,
     };
 
     constructor(props: Props) {
