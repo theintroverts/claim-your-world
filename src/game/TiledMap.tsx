@@ -58,7 +58,7 @@ export class TiledMap extends React.Component<Props, State> {
                     continue;
                 }
                 ctx.save();
-                this.drawCanvasTile({ x, y }, layer.data[gridIndex], ctx, tileSet);
+                this.drawCanvasTile({ x, y }, layer.data[gridIndex], ctx, tileSet, layer);
                 ctx.restore();
             }
         }
@@ -68,7 +68,8 @@ export class TiledMap extends React.Component<Props, State> {
         { x, y }: { x: number; y: number },
         tileIndex: number,
         ctx: CanvasRenderingContext2D,
-        tileset: HTMLImageElement
+        tileset: HTMLImageElement,
+        layer: Layer
     ) {
         const {
             tsxJs: { columns: cols, tileheight, tilewidth, spacing },
@@ -84,8 +85,8 @@ export class TiledMap extends React.Component<Props, State> {
         const posX = x * tilewidth;
         const posY = y * tileheight;
 
-        let left = tileX * (tilewidth + spacing);
-        let top = tileY * (tileheight + spacing);
+        let left = (layer.x + tileX) * (tilewidth + spacing);
+        let top = (layer.y + tileY) * (tileheight + spacing);
 
         ctx.translate(posX, posY);
 

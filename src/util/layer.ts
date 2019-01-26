@@ -60,7 +60,7 @@ interface Rect {
     height: number;
 }
 
-export function layerToComposite(layer: Layer): Composite {
+export function layerToComposite(layer: Layer, { tilewidth, tileheight }: TmxJson): Composite {
     const composite = Composite.create();
 
     const rectMap: Array<Array<Rect>> = [];
@@ -73,7 +73,13 @@ export function layerToComposite(layer: Layer): Composite {
     };
 
     const buildRect = (x: number, y: number, width: number, height: number, options = { isStatic: true }) =>
-        Bodies.rectangle(x + width / 2, y + height / 2, width, height, options);
+        Bodies.rectangle(
+            (x + width / 2) * tilewidth,
+            (y + height / 2) * tileheight,
+            width * tilewidth,
+            height * tileheight,
+            options
+        );
 
     for (let dy = 0; dy < layer.height; dy++) {
         for (let dx = 0; dx < layer.width; dx++) {
@@ -126,7 +132,7 @@ export function extractTmxCollisionComposite(tmx: TmxJson): Composite {
 
     for (const layer of tmx.layers) {
         if (layer.name.includes('collision')) {
-            Composite.add(composite, layerToComposite(layer));
+            Composite.add(composite, layerToComposite(layer, tmx));
         }
     }
     return composite;
