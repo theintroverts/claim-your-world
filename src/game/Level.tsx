@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Sprite, TileMap } from 'react-game-kit';
 
 import { TiledMap } from './TiledMap';
 

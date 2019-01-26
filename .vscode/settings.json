@@ -4,6 +4,9 @@
     "[typescript]": {
         "editor.formatOnSave": true
     },
+    "[typescriptreact]": {
+        "editor.formatOnSave": true
+    },
     "[json]": {
         "editor.formatOnSave": true
     },
@@ -11,6 +14,7 @@
         "editor.formatOnSave": true
     },
     "importSorter.generalConfiguration.sortOnBeforeSave": true,
+    "importSorter.generalConfiguration.exclude": ["\\.d\\.ts$"],
     "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 120,
     "importSorter.importStringConfiguration.tabSize": 4,
     "importSorter.importStringConfiguration.quoteMark": "single",

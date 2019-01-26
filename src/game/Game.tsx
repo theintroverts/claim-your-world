@@ -2,6 +2,7 @@ import Matter from 'matter-js';
 import React, { Component } from 'react';
 import { KeyListener, Loop, Stage, World } from 'react-game-kit';
 
+import Character from './Character';
 import Level from './Level';
 
 export default class Game extends Component {
@@ -25,6 +26,7 @@ export default class Game extends Component {
                 <Stage style={{ background: '#3a9bdc' }}>
                     <World onInit={this.physicsInit}>
                         <Level />
+                        <Character keys={this.keyListener} />
                     </World>
                 </Stage>
             </Loop>
