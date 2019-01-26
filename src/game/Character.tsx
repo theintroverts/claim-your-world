@@ -40,7 +40,10 @@ class Character extends React.Component<Props> {
         this.checkKeys();
 
         if (bodyRef && bodyRef.body) {
-            const pos: { x: number; y: number } = (bodyRef.body as any).position;
+            const pos = {
+                x: Math.round(1000 * bodyRef.body.position.x) / 1000,
+                y: Math.round(1000 * bodyRef.body.position.y) / 1000,
+            };
 
             if (this.props.x !== pos.x || this.props.y !== pos.y) {
                 this.props.setCharacterPosition(pos);
