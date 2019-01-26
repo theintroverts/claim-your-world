@@ -3,6 +3,7 @@ import { KeyListener, Loop, Stage } from 'react-game-kit';
 
 import { TmxJson, TsxJson } from '../util/layer';
 import IntroWorld from './IntroWorld';
+import Scalator from './Scalator';
 import Viewport from './Viewport';
 
 const tmxJs: TmxJson = require('../assets/ClaimYourWorld.tmx.json');
@@ -27,9 +28,11 @@ export default class Game extends Component {
         return (
             <Loop>
                 <Stage width={800} height={450} style={this.getStageStyles()}>
-                    <Viewport width={800} height={450}>
-                        <IntroWorld keyListener={this.keyListener} tileData={{ tmxJs, tsxJs }} />
-                    </Viewport>
+                    <Scalator>
+                        <Viewport width={800} height={450}>
+                            <IntroWorld keyListener={this.keyListener} tileData={{ tmxJs, tsxJs }} />
+                        </Viewport>
+                    </Scalator>
                 </Stage>
             </Loop>
         );
