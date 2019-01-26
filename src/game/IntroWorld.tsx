@@ -2,7 +2,7 @@ import Matter from 'matter-js';
 import React, { Component } from 'react';
 import { KeyListener, World } from 'react-game-kit';
 
-import { extractTmxCollisionComposite, TileData } from '../util/layer';
+import { COLLISION_CATEGORY, COLLISION_GROUP, extractTmxCollisionComposite, TileData } from '../util/layer';
 import Character from './Character';
 import { Debug } from './Debug';
 import Level from './Level';
@@ -27,5 +27,20 @@ export default class IntroWorld extends Component<Prop> {
         engine.world.gravity.y = 0;
         const collision = extractTmxCollisionComposite(this.props.tileData.tmxJs);
         Matter.World.addComposite(engine.world, collision);
+
+        Matter.World.addBody(
+            engine.world,
+            Matter.Bodies.circle(3000, 650, 100, {
+                isSensor: true,
+                isStatic: false,
+                collisionFilter: {
+                    group: COLLISION_GROUP.OTHER,
+                    category: COLLISION_CATEGORY.OBJECT,
+                    mask: COLLISION_CATEGORY.PLAYER,
+                },
+            })
+        );
+
+        Matter.Events.on(engine, 'collisionActive', (e: any) => console.log(...e.pairs));
     };
 }
