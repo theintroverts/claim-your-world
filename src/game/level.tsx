@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Sprite, TileMap } from "react-game-kit";
+import { TiledMap } from "./TiledMap";
 export default class Level extends Component {
   render() {
     return (
@@ -10,6 +11,7 @@ export default class Level extends Component {
           transformOrigin: "top left"
         }}
       >
+        {/* 
         <TileMap
           //columns={37}
           //rows={28}
@@ -19,8 +21,9 @@ export default class Level extends Component {
           rows={2}
           tileSize={16}
           src={require("../assets/roguelikeCity_magenta.png")}
-          layers={[[1, 1, 1, 3, 2, 4, 2, 1], [4, 2, 2, 1, 1, 4, 2, 5]]}
-        />
+          layers={[1, 1, 1, 3, 2, 4, 2, 1, 4, 2, 2, 1, 1, 4, 2, 5]}
+        />*/}
+        <TiledMap />
       </div>
     );
   }
