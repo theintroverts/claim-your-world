@@ -1,16 +1,15 @@
 import Matter, { IPair } from 'matter-js';
 import React, { Component } from 'react';
 import { KeyListener, World } from 'react-game-kit';
-import { connect, Omit } from 'react-redux';
+import { connect } from 'react-redux';
 
-import { energySources, playerStats, State } from '../store';
+import { EnergySourceCreationData, energySources, playerStats, State } from '../store';
 import { extractTmxCollisionComposite, TileData } from '../util/layer';
 import Character from './Character';
 import { Debug } from './Debug';
 import EnergySource from './EnergySource';
 import { EnergySourceData, getEnergySourceData } from './energySources';
 import Level from './Level';
-import { PixelFont } from './PixelFont';
 
 export interface Prop {
     keyListener: KeyListener;
@@ -18,7 +17,7 @@ export interface Prop {
     energySources: Array<EnergySourceData>;
 
     modifyEnergy: (energy: number) => void;
-    addEnergySource: (x: Omit<EnergySourceData, 'createdAt'>) => void;
+    addEnergySource: (x: EnergySourceCreationData) => void;
 }
 
 class IntroWorld extends Component<Prop> {
@@ -28,7 +27,7 @@ class IntroWorld extends Component<Prop> {
                 <Level tileData={this.props.tileData} />
                 <Debug {...this.props.tileData} keys={this.props.keyListener} />
                 {this.props.energySources.map(x => (
-                    <EnergySource key={x.createdAt.toString()} {...x} />
+                    <EnergySource {...x} />
                 ))}
                 <Character keys={this.props.keyListener} />
             </World>

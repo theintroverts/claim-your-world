@@ -4,6 +4,7 @@ import { Omit } from 'react-redux';
 import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
 
 export interface EnergySourceData {
+    key: string;
     createdAt: Date;
     x: number;
     y: number;

@@ -26,13 +26,15 @@ export const playerLocation = createSlice({
     },
 });
 
+export type EnergySourceCreationData = Omit<EnergySourceData, 'createdAt' | 'key'>;
+
 export const energySources = createSlice({
     slice: 'energySources',
     initialState: [] as Array<EnergySourceData>,
     reducers: {
-        addEnergySource: (state, { payload: energySource }: PayloadAction<Omit<EnergySourceData, 'createdAt'>>) => [
+        addEnergySource: (state, { payload: energySource }: PayloadAction<EnergySourceCreationData>) => [
             ...state,
-            { ...energySource, createdAt: new Date() },
+            { ...energySource, key: Math.random().toString(), createdAt: new Date() },
         ],
     },
 });
