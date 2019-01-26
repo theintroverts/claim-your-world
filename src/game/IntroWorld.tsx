@@ -17,8 +17,8 @@ export default class IntroWorld extends Component<Prop> {
         return (
             <World onInit={this.physicsInit}>
                 <Level tileData={this.props.tileData} />
-                <Character keys={this.props.keyListener} />
                 <Debug {...this.props.tileData} keys={this.props.keyListener} />
+                <Character keys={this.props.keyListener} />
             </World>
         );
     }

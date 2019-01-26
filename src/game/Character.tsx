@@ -45,7 +45,10 @@ class Character extends React.Component<Props, CharacterState> {
         const body = this.bodyRef.current;
         if (body && body.body) {
             Matter.Body.setVelocity(body.body, { x, y });
-            this.setState({ isMoving: x !== 0 || y !== 0 });
+            this.setState(state => {
+                const isMoving = x !== 0 || y !== 0;
+                return isMoving === state.isMoving ? null : { isMoving };
+            });
         }
     };
 
