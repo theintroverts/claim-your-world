@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 
+import { TileData } from '../util/layer';
 import { TiledMap } from './TiledMap';
 
-export default class Level extends Component {
+export default class Level extends Component<{ tileData: TileData }> {
     render() {
         return (
             <div
@@ -12,7 +13,7 @@ export default class Level extends Component {
                     transformOrigin: 'top left',
                 }}
             >
-                <TiledMap />
+                <TiledMap {...this.props.tileData} />
             </div>
         );
     }

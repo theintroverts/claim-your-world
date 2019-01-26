@@ -1,55 +1,7 @@
 import PropTypes from 'prop-types';
 import * as React from 'react';
 
-export interface Layer {
-    data: number[];
-    height: number;
-    name: string;
-    opacity: number;
-    type: string;
-    visible: boolean;
-    width: number;
-    x: number;
-    y: number;
-}
-
-export interface Tileset {
-    firstgid: number;
-    source: string;
-}
-
-export interface TmxJson {
-    height: number;
-    infinite: boolean;
-    layers: Layer[];
-    nextobjectid: number;
-    orientation: string;
-    renderorder: string;
-    tiledversion: string;
-    tileheight: number;
-    tilesets: Tileset[];
-    tilewidth: number;
-    type: string;
-    version: number;
-    width: number;
-}
-
-export interface TsxJson {
-    columns: number;
-    image: string;
-    imageheight: number;
-    imagewidth: number;
-    margin: number;
-    name: string;
-    spacing: number;
-    tilecount: number;
-    tileheight: number;
-    tilewidth: number;
-    type: string;
-}
-
-const tmxJs: TmxJson = require('../assets/ClaimYourWorld.tmx.json');
-const tsxJs: TsxJson = require('../assets/ClaimYourWorld.tsx.json');
+import { Layer, TmxJson, TsxJson } from '../util/layer';
 
 type Props = {
     tmxJs: TmxJson;
@@ -60,7 +12,6 @@ type State = {
 };
 
 export class TiledMap extends React.Component<Props, State> {
-    static defaultProps = { tmxJs, tsxJs };
     state = { tilemapLoaded: false };
     tilemapImage?: HTMLImageElement;
 

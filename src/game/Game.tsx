@@ -3,6 +3,9 @@ import { KeyListener, Loop, Stage } from 'react-game-kit';
 
 import IntroWorld from './IntroWorld';
 
+const tmxJs = require('../assets/ClaimYourWorld.tmx.json');
+const tsxJs = require('../assets/ClaimYourWorld.tsx.json');
+
 export default class Game extends Component {
     componentDidMount() {
         this.keyListener.subscribe([
@@ -21,7 +24,7 @@ export default class Game extends Component {
         return (
             <Loop>
                 <Stage style={this.getStageStyles()}>
-                    <IntroWorld keyListener={this.keyListener} />
+                    <IntroWorld keyListener={this.keyListener} tileData={{ tmxJs, tsxJs }} />
                 </Stage>
             </Loop>
         );
