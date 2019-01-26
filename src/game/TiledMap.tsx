@@ -77,20 +77,15 @@ export class TiledMap extends React.Component<Props> {
 
     const mappedLayers: React.ReactNode[] = [];
 
-    for (const layer of layers) {
-      for (let x = 0; x < height; x++) {
-        for (let y = 0; y < width; y++) {
-          const gridIndex = x * width + y;
+    for (let l = 0; l < layers.length; l++) {
+      const layer = layers[l];
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const gridIndex = y * width + x;
           if (layer.data[gridIndex] === 0) {
             continue;
           }
-          mappedLayers.push(
-            this.getTile(
-              { x: y, y: x },
-              layer.data[gridIndex] & 0xffff,
-              layer.name
-            )
-          );
+          mappedLayers.push(this.getTile({ x, y }, layer.data[gridIndex], l));
         }
       }
     }
@@ -98,18 +93,19 @@ export class TiledMap extends React.Component<Props> {
     return mappedLayers;
   }
 
-  getTile(
-    { x, y }: { x: number; y: number },
-    tileIndex: number,
-    layerId: string
-  ) {
+  getTile({ x, y }: { x: number; y: number }, tileIndex: number, l: number) {
     const {
       tsxJs: { columns: cols, tileheight, tilewidth, spacing }
     } = this.props;
     const { scale } = this.context;
 
-    const tileX = tileIndex % cols;
-    const tileY = Math.floor(tileIndex / cols);
+    const flip_horiz = 0x80000000 & tileIndex;
+    const flip_vert = 0x40000000 & tileIndex;
+    const flip_diag = 0x20000000 & tileIndex;
+    const realTileIndex = (tileIndex & 0x1fffffff) - 1;
+
+    const tileX = realTileIndex % cols;
+    const tileY = Math.floor(realTileIndex / cols);
 
     const posX = x * tilewidth * scale;
     const posY = y * tileheight * scale;
@@ -119,21 +115,25 @@ export class TiledMap extends React.Component<Props> {
       width: tilewidth * scale,
       overflow: "hidden",
       position: "absolute",
-      transform: `translate(${posX}px, ${posY}px)`
+      zIndex: l,
+      transform:
+        `translate(${posX}px, ${posY}px) ` +
+        ` ${flip_horiz ? "scaleX(-1)" : ""} ` +
+        ` ${flip_vert ? "scaleY(-1)" : ""} `
     };
 
-    const left = tileX * (tilewidth + spacing) * scale;
-    const top = tileY * (tileheight + spacing) * scale;
+    const left = tileX * (tilewidth + spacing);
+    const top = tileY * (tileheight + spacing);
 
     const imageStyle: React.CSSProperties = {
       position: "absolute",
       imageRendering: "pixelated",
       display: "block",
-      transform: `translate(-${left}px, -${top}px)`
+      transform: ` translate(-${left}px, -${top}px) `
     };
 
     return (
-      <div key={`tile-${layerId}-${x}-${y}`} style={imageWrapperStyle}>
+      <div key={`tile-${l}-${x}-${y}`} style={imageWrapperStyle}>
         <img style={imageStyle} src={this.tileFileName} />
       </div>
     );
