@@ -41,6 +41,15 @@ class IntroWorld extends Component<Prop> {
         Matter.World.addComposite(engine.world, collision);
 
         this.props.addEnergySource({
+            x: 1175,
+            y: 630,
+            radius: 200,
+            energyAmount: Number.POSITIVE_INFINITY,
+            playerGainDelta: -0.02,
+            lossDelta: 0,
+        });
+
+        this.props.addEnergySource({
             x: 2600,
             y: 710,
             radius: 75,

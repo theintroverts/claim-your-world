@@ -34,7 +34,7 @@ export default class EnergySource extends React.Component<EnergySourceData> {
             width: 2 * this.props.radius,
             height: 2 * this.props.radius,
             borderRadius: this.props.radius,
-            background: 'rgba(0, 255, 0, .7)',
+            background: this.props.playerGainDelta < 0 ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .7)',
             filter: `blur(${this.props.radius / 2}px)`,
         };
     }
