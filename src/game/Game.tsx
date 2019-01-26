@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { KeyListener, Loop, Stage } from 'react-game-kit';
 
+import { TmxJson, TsxJson } from '../util/layer';
 import IntroWorld from './IntroWorld';
 
-const tmxJs = require('../assets/ClaimYourWorld.tmx.json');
-const tsxJs = require('../assets/ClaimYourWorld.tsx.json');
+const tmxJs: TmxJson = require('../assets/ClaimYourWorld.tmx.json');
+const tsxJs: TsxJson = require('../assets/ClaimYourWorld.tsx.json');
 
 export default class Game extends Component {
     componentDidMount() {
