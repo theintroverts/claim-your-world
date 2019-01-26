@@ -1,3 +1,4 @@
+import Matter from 'matter-js';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -8,8 +9,17 @@ export default class EnergySource extends React.Component<EnergySourceData> {
         engine: PropTypes.object,
     };
 
+    private body: Matter.Body | undefined;
+
     componentDidMount() {
-        registerEnergySource(this.context.engine.world, this.props);
+        this.body = registerEnergySource(this.context.engine.world, this.props);
+    }
+
+    componentWillUnmount() {
+        if (this.body !== undefined) {
+            const { engine }: { engine: Matter.Engine } = this.context;
+            Matter.World.remove(engine.world, this.body);
+        }
     }
 
     render() {
@@ -24,7 +34,7 @@ export default class EnergySource extends React.Component<EnergySourceData> {
             width: 2 * this.props.radius,
             height: 2 * this.props.radius,
             borderRadius: this.props.radius,
-            background: 'lightgreen',
+            background: 'rgba(0, 255, 0, .7)',
             filter: `blur(${this.props.radius / 2}px)`,
         };
     }
