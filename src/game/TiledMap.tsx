@@ -1,5 +1,5 @@
-import * as React from "react";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
+import * as React from 'react';
 
 export interface Layer {
   data: number[];
@@ -65,35 +65,58 @@ type Props = {
 
 export class TiledMap extends React.Component<Props> {
   static defaultProps = { tmxJs, tsxJs };
+  private canvas = React.createRef<HTMLCanvasElement>();
+  private lastDrawnCanvas?: HTMLCanvasElement;
 
   shouldComponentUpdate(nextProps: Props, nextState: {}, nextContext: any) {
     return this.context.scale !== nextContext.scale;
   }
 
-  generateMap() {
+  async drawCanvas() {
+    console.log("draw");
+    const canvas = this.canvas.current;
+    if (!canvas) {
+      return;
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      return;
+    }
+
+    this.lastDrawnCanvas = canvas;
+
     const {
       tmxJs: { layers, width, height }
     } = this.props;
 
-    const mappedLayers: React.ReactNode[] = [];
-
-    for (let l = 0; l < layers.length; l++) {
-      const layer = layers[l];
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          const gridIndex = y * width + x;
-          if (layer.data[gridIndex] === 0) {
-            continue;
+    const img = document.createElement("img");
+    img.src = this.tileFileName;
+    img.onload = () => {
+      for (let l = 0; l < layers.length; l++) {
+        const layer = layers[l];
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const gridIndex = y * width + x;
+            if (layer.data[gridIndex] === 0) {
+              continue;
+            }
+            ctx.save();
+            this.drawCanvasTile({ x, y }, layer.data[gridIndex], l, ctx, img);
+            ctx.restore();
           }
-          mappedLayers.push(this.getTile({ x, y }, layer.data[gridIndex], l));
         }
       }
-    }
-
-    return mappedLayers;
+    };
   }
 
-  getTile({ x, y }: { x: number; y: number }, tileIndex: number, l: number) {
+  drawCanvasTile(
+    { x, y }: { x: number; y: number },
+    tileIndex: number,
+    l: number,
+    ctx: CanvasRenderingContext2D,
+    tileset: HTMLImageElement
+  ) {
     const {
       tsxJs: { columns: cols, tileheight, tilewidth, spacing }
     } = this.props;
@@ -108,46 +131,39 @@ export class TiledMap extends React.Component<Props> {
     const posX = x * tilewidth;
     const posY = y * tileheight;
 
-    const imageWrapperStyle: React.CSSProperties = {
-      height: tileheight,
-      width: tilewidth,
-      overflow: "hidden",
-      position: "absolute",
-      zIndex: l,
-      transform:
-        `translate(${posX}px, ${posY}px) ` +
-        ` scaleX(${(flip_horiz ? -1 : 1)}) ` +
-        ` scaleY(${(flip_vert ? -1 : 1)}) ` +
-        `${!flip_diag ? "" : " rotate(90deg) scaleY(-1)"}`
-    };
+    let left = tileX * (tilewidth + spacing);
+    let top = tileY * (tileheight + spacing);
 
-    const left = tileX * (tilewidth + spacing);
-    const top = tileY * (tileheight + spacing);
+    ctx.translate(posX, posY);
 
-    const imageStyle: React.CSSProperties = {
-      position: "absolute",
-      imageRendering: "pixelated",
-      display: "block",
-      transform: ` translate(-${left}px, -${top}px) `
-    };
+    if (flip_horiz) {
+      ctx.translate(tilewidth, 0);
+      ctx.scale(-1, 1);
+    }
+    if (flip_vert) {
+      ctx.translate(0, tileheight);
+      ctx.scale(1, -1);
+    }
+    if (flip_diag) {
+      ctx.rotate(Math.PI / 2);
+      ctx.scale(1, -1);
+    }
 
-    return (
-      <div key={`tile-${l}-${x}-${y}`} style={imageWrapperStyle}>
-        <img style={imageStyle} src={this.tileFileName} />
-      </div>
+    ctx.drawImage(
+      tileset,
+      left,
+      top,
+      tilewidth,
+      tileheight,
+      0,
+      0,
+      tilewidth,
+      tileheight
     );
   }
 
   get tileFileName() {
     return `tiles/${this.props.tsxJs.image}`;
-  }
-
-  getLayerStyles() {
-    return {
-      position: "absolute",
-      top: 0,
-      left: 0
-    } as React.CSSProperties;
   }
 
   getWrapperStyles() {
@@ -164,16 +180,18 @@ export class TiledMap extends React.Component<Props> {
       return null;
     }
 
-    const layers = this.generateMap();
+    if (this.canvas.current && this.canvas.current !== this.lastDrawnCanvas) {
+      this.drawCanvas();
+    }
+
     return (
       <div style={{ ...this.getWrapperStyles() }}>
-        {layers.map((layer, index) => {
-          return (
-            <div key={`layer-${index}`} style={this.getLayerStyles()}>
-              {layer}
-            </div>
-          );
-        })}
+        <canvas
+          ref={this.canvas}
+          width={800}
+          height={500}
+          style={{ width: 800, height: 500 }}
+        />
       </div>
     );
   }
