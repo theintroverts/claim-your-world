@@ -7,10 +7,11 @@ import { EnergySourceData } from './game/energySources';
 export const playerStats = createSlice({
     slice: 'playerStats',
     initialState: {
-        energy: 100,
+		energy: 100,
+		money: 30,
     },
     reducers: {
-        modifyEnergy: (state, { payload: energy }) => ({ energy: Math.min(100, state.energy + energy) }),
+        modifyEnergy: (state, { payload: energy }) => ({...state, energy: Math.min(100, state.energy + energy) }),
     },
 });
 
