@@ -10,6 +10,7 @@ import { Debug } from './Debug';
 import EnergySource from './EnergySource';
 import { EnergySourceData, getEnergySourceData } from './energySources';
 import Level from './Level';
+import YoshiEgg from './YoshiEgg';
 
 export interface Prop {
     keyListener: KeyListener;
@@ -31,6 +32,7 @@ class IntroWorld extends Component<Prop> {
             <World onInit={this.physicsInit}>
                 <Level tileData={this.props.tileData} />
                 <Debug {...this.props.tileData} keys={this.props.keyListener} />
+                <YoshiEgg x={350} y={350} />
                 {this.props.energySources.map(x => (
                     <EnergySource {...x} />
                 ))}
