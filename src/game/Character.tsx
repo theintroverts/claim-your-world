@@ -12,6 +12,8 @@ export interface Props {
     x: number;
     y: number;
 
+    energy: number;
+
     setCharacterPosition: (_: { x: number; y: number }) => void;
     modifyEnergy: (energy: number) => void;
 }
@@ -75,30 +77,30 @@ class Character extends React.Component<Props, CharacterState> {
     };
 
     checkKeys = () => {
-        const { keys } = this.props;
-        const WALK_SPEED = 3;
+        const { energy, keys } = this.props;
+        const walkSpeed = energy < 15 ? 1 : energy < 25 ? 2 : 3.5;
 
         let velocityX = 0;
         let velocityY = 0;
         let spriteState: number | undefined;
 
         if (keys.isDown(keys.LEFT)) {
-            velocityX = -WALK_SPEED;
+            velocityX = -walkSpeed;
             spriteState = 1;
         }
 
         if (keys.isDown(keys.RIGHT)) {
-            velocityX = WALK_SPEED;
+            velocityX = walkSpeed;
             spriteState = 2;
         }
 
         if (keys.isDown(keys.UP)) {
-            velocityY = -WALK_SPEED;
+            velocityY = -walkSpeed;
             spriteState = 3;
         }
 
         if (keys.isDown(keys.DOWN)) {
-            velocityY = WALK_SPEED;
+            velocityY = walkSpeed;
             spriteState = 0;
         }
 
@@ -165,7 +167,7 @@ class Character extends React.Component<Props, CharacterState> {
 }
 
 export default connect(
-    ({ playerLocation: { x, y } }: State) => ({ x, y }),
+    ({ playerStats: { energy }, playerLocation: { x, y } }: State) => ({ energy, x, y }),
     {
         setCharacterPosition: playerLocation.actions.setCharacterPosition,
         modifyEnergy: playerStats.actions.modifyEnergy,
