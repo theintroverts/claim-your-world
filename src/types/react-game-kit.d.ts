@@ -19,7 +19,9 @@ declare module 'react-game-kit' {
             tileWidth: number;
         }>
     >;
-    export const AudioPlayer: any;
+
+    declare class AudioPlayer {}
+
     export const Loop: React.ComponentType<{}>;
     export const Stage: React.ComponentType<Partial<{ height: number; width: number; style: any }>>;
     export class KeyListener {

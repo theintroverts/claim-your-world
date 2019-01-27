@@ -2,17 +2,38 @@ import Matter from 'matter-js';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { EnergySourceData, registerEnergySource } from './energySources';
+import { EnergySourceData, getEnergySourceLink, registerEnergySource } from './energySources';
 
-export default class EnergySource extends React.Component<EnergySourceData> {
+export interface EnergySourceState {
+    x: number;
+    y: number;
+}
+
+export default class EnergySource extends React.Component<EnergySourceData, EnergySourceState> {
     static contextTypes = {
         engine: PropTypes.object,
     };
 
     private body: Matter.Body | undefined;
+    private linkTo: Matter.Body | undefined;
+
+    /*static getDerivedStateFromProps(props: EnergySourceData, state: EnergySourceState): EnergySourceState {
+        return this.linkTo ? state : props;
+    }*/
+
+    constructor(props: EnergySourceData) {
+        super(props);
+
+        this.state = props;
+        this.linkTo = getEnergySourceLink(props.id);
+    }
 
     componentDidMount() {
         this.body = registerEnergySource(this.context.engine.world, this.props);
+
+        if (this.linkTo) {
+            Matter.Events.on(this.context.engine, 'afterUpdate', this.update);
+        }
     }
 
     componentWillUnmount() {
@@ -20,10 +41,28 @@ export default class EnergySource extends React.Component<EnergySourceData> {
             const { engine }: { engine: Matter.Engine } = this.context;
             Matter.World.remove(engine.world, this.body);
         }
+
+        Matter.Events.off(this.context.engine, 'afterUpdate', this.update);
     }
 
+    update = () => {
+        if (this.linkTo === undefined || this.body === undefined) {
+            return;
+        }
+
+        const x = Math.round(10 * this.linkTo.position.x) / 10;
+        const y = Math.round(10 * this.linkTo.position.y) / 10;
+
+        if (this.state.x !== x || this.state.y !== y) {
+            this.setState({ x, y });
+            Matter.Body.setPosition(this.body, { x, y });
+            //this.body.position.x = x;
+            //this.body.position.y = y;
+        }
+    };
+
     render() {
-        const { x, y, radius, colorCode } = this.props;
+        const { radius, colorCode } = this.props;
 
         if (colorCode === null) {
             return <div />;
@@ -33,8 +72,8 @@ export default class EnergySource extends React.Component<EnergySourceData> {
             <svg
                 style={{
                     position: 'absolute',
-                    left: x - radius * 2,
-                    top: y - radius * 2,
+                    left: this.state.x - radius * 2,
+                    top: this.state.y - radius * 2,
                     width: 4 * radius,
                     height: 4 * radius,
                 }}

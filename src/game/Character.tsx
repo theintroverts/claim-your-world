@@ -145,7 +145,7 @@ class Character extends React.Component<Props, CharacterState> {
                     inertia={Infinity}
                     ref={this.bodyRef}
                     collisionFilter={{
-                        group: COLLISION_GROUP.PLAYER,
+                        group: COLLISION_GROUP.CAN_COLLIDE,
                         category: COLLISION_CATEGORY.PLAYER,
                         mask: COLLISION_CATEGORY.ALL,
                     }}

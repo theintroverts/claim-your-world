@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { KeyListener, Loop, Stage } from 'react-game-kit';
+import { AudioPlayer, KeyListener, Loop, Stage } from 'react-game-kit';
 import { connect } from 'react-redux';
 
 import { State } from '../store';

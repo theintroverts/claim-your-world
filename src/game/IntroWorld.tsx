@@ -10,9 +10,9 @@ import { Debug } from './Debug';
 import EnergySource from './EnergySource';
 import { EnergySourceData, getEnergySourceData } from './energySources';
 import Level from './Level';
-import YoshiEgg from './YoshiEgg';
+import YoshiEgg, { YoshiEggState } from './YoshiEgg';
 
-export interface Prop {
+export interface Props {
     keyListener: KeyListener;
     tileData: TileData;
     energySources: Array<EnergySourceData>;
@@ -26,15 +26,37 @@ export interface Prop {
     addEnergySource: (x: EnergySourceCreationData) => void;
 }
 
-class IntroWorld extends Component<Prop> {
+export interface IntroWorldState {
+    yoshiEggs: Array<YoshiEggState>;
+}
+
+class IntroWorld extends Component<Props, IntroWorldState> {
+    constructor(props: Props) {
+        super(props);
+
+        const { tileheight, tilewidth, height, width } = props.tileData.tmxJs;
+        const [mapHeight, mapWidth] = [tileheight * height, tilewidth * width];
+
+        this.state = {
+            yoshiEggs: Array.from(Array(10)).map((_, i) => ({
+                x: Math.round(Math.random() * mapWidth),
+                y: Math.round(Math.random() * mapHeight),
+            })),
+        };
+
+        console.log(this.state.yoshiEggs);
+    }
+
     render() {
         return (
             <World onInit={this.physicsInit}>
                 <Level tileData={this.props.tileData} />
                 <Debug {...this.props.tileData} keys={this.props.keyListener} />
-                <YoshiEgg x={350} y={350} />
+                {this.state.yoshiEggs.map((pos, key) => (
+                    <YoshiEgg key={key} {...pos} />
+                ))}
                 {this.props.energySources.map(x => (
-                    <EnergySource {...x} />
+                    <EnergySource key={x.id} {...x} />
                 ))}
                 <Character keys={this.props.keyListener} />
             </World>

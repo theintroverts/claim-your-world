@@ -133,8 +133,8 @@ export function layerToRects(layer: Layer, { tilewidth, tileheight }: TmxJson): 
 }
 
 export enum COLLISION_GROUP {
-    PLAYER = 0,
-    OTHER = -1,
+    CAN_COLLIDE = 0,
+    NEVER_COLLIDES = -1,
 }
 
 export enum COLLISION_CATEGORY {
@@ -142,6 +142,7 @@ export enum COLLISION_CATEGORY {
     PLAYER = 1,
     WALL = 2,
     OBJECT = 4,
+    SENSOR = 8,
 }
 
 export function extractTmxCollisionComposite(tmx: TmxJson): Composite {
@@ -149,9 +150,9 @@ export function extractTmxCollisionComposite(tmx: TmxJson): Composite {
     const options = {
         isStatic: true,
         collisionFilter: {
-            group: COLLISION_GROUP.OTHER,
+            group: COLLISION_GROUP.NEVER_COLLIDES,
             category: COLLISION_CATEGORY.WALL,
-            mask: COLLISION_CATEGORY.PLAYER,
+            mask: COLLISION_CATEGORY.PLAYER | COLLISION_CATEGORY.OBJECT,
         },
     };
 

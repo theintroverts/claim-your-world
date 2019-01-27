@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Body as GameKitBody, KeyListener, Sprite } from 'react-game-kit';
 import { connect } from 'react-redux';
+import UUID from 'uuid';
 
 import { EnergySourceCreationData, energySources, playerLocation, playerStats, State } from '../store';
+import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
+import { linkEnergySource } from './energySources';
 
 export interface Props {
     x: number;
@@ -55,16 +58,18 @@ class YoshiEgg extends React.Component<Props, YoshiEggState> {
         const casaLocY = 710;
         const casaDistance = Math.sqrt((casaLocX - x) ** 2 + (casaLocY - y) ** 2);
 
-        if (casaDistance < 75 && !this.spawned) {
-            this.spawned = true;
+        if (casaDistance < 75 && this.spawnId === undefined) {
+            this.spawnId = UUID.v4();
+            linkEnergySource(this.spawnId, bodyRef.body);
             this.props.addEnergySource({
+                id: this.spawnId,
                 x,
                 y,
                 radius: 50,
                 energyAmount: Number.POSITIVE_INFINITY,
                 lossDelta: 0,
                 colorCode: 'rgba(0, 255, 0, .7)',
-                playerGainEnergyDelta: () => 0.33,
+                playerGainEnergyDelta: () => 1.5,
             });
         }
     };
@@ -88,11 +93,11 @@ class YoshiEgg extends React.Component<Props, YoshiEggState> {
                     args={[x, y, 24, 24]}
                     inertia={Infinity}
                     ref={this.bodyRef}
-                    /*collisionFilter={{
-                        group: COLLISION_GROUP.PLAYER,
-                        category: COLLISION_CATEGORY.PLAYER,
-                        mask: COLLISION_CATEGORY.ALL,
-                    }} */
+                    collisionFilter={{
+                        group: COLLISION_GROUP.CAN_COLLIDE,
+                        category: COLLISION_CATEGORY.OBJECT,
+                        mask: COLLISION_CATEGORY.PLAYER | COLLISION_CATEGORY.WALL | COLLISION_CATEGORY.OBJECT,
+                    }}
                 >
                     <img src="yoshiegg.png" style={{ transform: 'translateX(-13px) translateY(-40px)' }} />
                 </GameKitBody>
@@ -101,7 +106,7 @@ class YoshiEgg extends React.Component<Props, YoshiEggState> {
     }
 
     private bodyRef = React.createRef<GameKitBody>();
-    private spawned: boolean = false;
+    private spawnId: string | undefined;
 }
 
 export default connect(
