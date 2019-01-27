@@ -2,18 +2,23 @@ import Matter from 'matter-js';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Body as GameKitBody, KeyListener, Sprite } from 'react-game-kit';
+import { connect } from 'react-redux';
+
+import { EnergySourceCreationData, energySources, playerLocation, playerStats, State } from '../store';
 
 export interface Props {
     x: number;
     y: number;
+
+    addEnergySource: (x: EnergySourceCreationData) => void;
 }
 
-export interface State {
+export interface YoshiEggState {
     x: number;
     y: number;
 }
 
-export default class YoshiEgg extends React.Component<Props, State> {
+class YoshiEgg extends React.Component<Props, YoshiEggState> {
     static contextTypes = {
         engine: PropTypes.object,
     };
@@ -35,13 +40,32 @@ export default class YoshiEgg extends React.Component<Props, State> {
     update = () => {
         const bodyRef = this.bodyRef.current;
 
-        if (bodyRef && bodyRef.body) {
-            const x = Math.round(10 * bodyRef.body.position.x) / 10;
-            const y = Math.round(10 * bodyRef.body.position.y) / 10;
+        if (!bodyRef || !bodyRef.body) {
+            return;
+        }
 
-            if (this.state.x !== x || this.state.y !== y) {
-                this.setState({ x, y });
-            }
+        const x = Math.round(10 * bodyRef.body.position.x) / 10;
+        const y = Math.round(10 * bodyRef.body.position.y) / 10;
+
+        if (this.state.x !== x || this.state.y !== y) {
+            this.setState({ x, y });
+        }
+
+        const casaLocX = 2600;
+        const casaLocY = 710;
+        const casaDistance = Math.sqrt((casaLocX - x) ** 2 + (casaLocY - y) ** 2);
+
+        if (casaDistance < 75 && !this.spawned) {
+            this.spawned = true;
+            this.props.addEnergySource({
+                x,
+                y,
+                radius: 50,
+                energyAmount: Number.POSITIVE_INFINITY,
+                lossDelta: 0,
+                colorCode: 'rgba(0, 255, 0, .7)',
+                playerGainEnergyDelta: () => 0.33,
+            });
         }
     };
 
@@ -77,4 +101,12 @@ export default class YoshiEgg extends React.Component<Props, State> {
     }
 
     private bodyRef = React.createRef<GameKitBody>();
+    private spawned: boolean = false;
 }
+
+export default connect(
+    undefined,
+    {
+        addEnergySource: energySources.actions.addEnergySource,
+    }
+)(YoshiEgg);
