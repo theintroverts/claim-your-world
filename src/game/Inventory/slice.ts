@@ -7,10 +7,10 @@ import { InventoryItem } from './types';
 
 const yoshiEgg: InventoryItem = {
     name: 'Yoshi Egg',
-    onUse: () =>
+    onUse: ({ playerLocation }) =>
         worldItems.actions.add({
             Component: YoshiEgg,
-            props: { x: 2500, y: 900 },
+            props: { x: playerLocation.x + 30, y: playerLocation.y },
         }),
 };
 

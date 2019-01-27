@@ -10,16 +10,17 @@ import { CommonMenuProps } from './types';
 
 interface Props extends CommonMenuProps {
     items: Array<InventoryItem>;
+    playerLocation: State['playerLocation'];
     dispatch: Dispatch;
 }
-const InventoryMenu = ({ items, dispatch, ...props }: Props) => (
+const InventoryMenu = ({ items, playerLocation, dispatch, ...props }: Props) => (
     <BaseMenu
         rows={[
             ...items.map((item, idx) => ({
                 text: item.name,
                 onSelect: () => {
                     dispatch(inventory.actions.removeItem(idx));
-                    dispatch(item.onUse());
+                    dispatch(item.onUse({ playerLocation }));
                 },
             })),
             { text: 'cancel', onSelect: props.closeTopMenu },
@@ -30,4 +31,5 @@ const InventoryMenu = ({ items, dispatch, ...props }: Props) => (
 
 export default connect((state: State) => ({
     items: state.inventory,
+    playerLocation: state.playerLocation,
 }))(InventoryMenu);

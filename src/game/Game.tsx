@@ -38,6 +38,7 @@ class Game extends Component<Props> {
             this.keyListener.DOWN,
             this.keyListener.SPACE,
             this.keyListener.ENTER,
+            this.keyListener.KEY_I,
             this.keyListener.KEY_P,
         ]);
     }

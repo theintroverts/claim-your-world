@@ -5,6 +5,7 @@ export type KeyLock = symbol;
 export class LockableKeyListener extends KeyListener {
     private locks: KeyLock[] = [];
 
+    public readonly KEY_I = 73;
     public readonly KEY_P = 80;
     public readonly ENTER = 13;
 
