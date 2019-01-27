@@ -35,10 +35,11 @@ body,
 	padding: 6px 4px;
 	margin-bottom: 3px;
 	position: relative;
-	background: url('assets/beams/BeamHeart_LightBrown_middle.png');
+	background: url('assets/beams/LightBrown_middle.png');
 }
 
 .game-stats-wrapper .label {
+	margin-left: 10px;
 	display: inline-block;
 	width: 70%;
 }
@@ -49,13 +50,19 @@ body,
 
 .game-stats-wrapper li::after {
 	right: -37px;
-	background: url('assets/beams/BeamHeart_LightBrown_right.png');
+	background: url('assets/beams/LightBrown_right.png');
 }
 
 .game-stats-wrapper li.energy::before {
+	width: 39px;
 	background: url('assets/beams/BeamHeart_LightBrown_left.png');
 }
 
 .game-stats-wrapper li.money::before {
 	background: url('assets/beams/BeamCoin_LightBrown_left.png');
+}
+
+.game-stats-wrapper li.food::before {
+	width: 46px;
+	background: url('assets/beams/BeamSeed_LightBrown_left.png');
 }
