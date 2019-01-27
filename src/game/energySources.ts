@@ -15,7 +15,7 @@ export interface EnergySourceData {
     energyAmount: number;
     lossDelta: number;
 
-    colorCode: string;
+    colorCode: string | null;
 
     playerGainEnergyDelta: PlayerGainHandler;
     playerGainMoneyDelta: PlayerGainHandler;

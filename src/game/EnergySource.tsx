@@ -24,6 +24,11 @@ export default class EnergySource extends React.Component<EnergySourceData> {
 
     render() {
         const { x, y, radius, colorCode } = this.props;
+
+        if (colorCode === null) {
+            return <div />;
+        }
+
         return (
             <svg
                 style={{

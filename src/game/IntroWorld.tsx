@@ -94,6 +94,17 @@ class IntroWorld extends Component<Prop> {
             playerGainFoodDelta: ({ money }) => (money ? 2 : 0),
         });
 
+        // Hydrant auf der Straße
+        this.props.addEnergySource({
+            x: 2295,
+            y: 732,
+            radius: 25,
+            energyAmount: Number.POSITIVE_INFINITY,
+            lossDelta: 0,
+            colorCode: null,
+            playerGainEnergyDelta: ({ energy }) => (energy > 70 ? 0.25 : -0.1),
+        });
+
         Matter.Events.on(engine, 'collisionActive', (e: any) => {
             let totalDeltaEnergy = 0;
             let totalDeltaMoney = 0;
