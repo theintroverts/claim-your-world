@@ -65,7 +65,7 @@ class IntroWorld extends Component<Prop> {
             lossDelta: 0,
             colorCode: 'rgba(0, 255, 0, .7)',
             playerGainEnergyDelta: () => 1,
-            playerGainFoodDelta: ({ energy }) => (energy < 90 ? -0.5 : 0),
+            playerGainFoodDelta: ({ energy }) => (energy < 90 ? -0.5 : -0.01),
         });
 
         // Marktstand: teuer, aber gutes Essen und wenig Stress (weil auf welchem Parkplatz ist schon stressig)
