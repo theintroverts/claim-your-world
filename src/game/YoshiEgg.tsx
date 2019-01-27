@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Body as GameKitBody, KeyListener, Sprite } from 'react-game-kit';
 
+import { throttleExecution } from '../util/limitRenders';
+
 export interface Props {
     x: number;
     y: number;
@@ -21,7 +23,7 @@ export default class YoshiEgg extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = { ...this.props };
+        this.state = { x: props.x, y: props.y };
     }
 
     componentDidMount() {
@@ -32,7 +34,7 @@ export default class YoshiEgg extends React.Component<Props, State> {
         Matter.Events.off(this.context.engine, 'afterUpdate', this.update);
     }
 
-    update = () => {
+    update = throttleExecution(() => {
         const bodyRef = this.bodyRef.current;
 
         if (bodyRef && bodyRef.body) {
@@ -43,7 +45,7 @@ export default class YoshiEgg extends React.Component<Props, State> {
                 this.setState({ x, y });
             }
         }
-    };
+    });
 
     getWrapperStyles(): React.CSSProperties {
         const { x, y } = this.state;

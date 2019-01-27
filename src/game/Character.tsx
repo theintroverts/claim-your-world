@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { playerLocation, playerStats, State } from '../store';
 import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
+import { getFpsMeasure, throttleExecution } from '../util/limitRenders';
 
 export interface Props {
     keys: KeyListener;
@@ -60,7 +61,9 @@ class Character extends React.Component<Props, CharacterState> {
         }
     };
 
-    update = () => {
+    private fpsCounter = getFpsMeasure(fps => console.log('character updates this second', fps));
+    update = throttleExecution(() => {
+        this.fpsCounter();
         const bodyRef = this.bodyRef.current;
         this.checkKeys();
 
@@ -74,7 +77,7 @@ class Character extends React.Component<Props, CharacterState> {
                 this.props.setCharacterPosition(pos);
             }
         }
-    };
+    });
 
     checkKeys = () => {
         const { energy, keys } = this.props;
