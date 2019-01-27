@@ -53,6 +53,7 @@ class IntroWorld extends Component<Prop> {
             lossDelta: 0,
             colorCode: 'rgba(255, 0, 0, .5)',
             playerGainEnergyDelta: () => -2,
+            playerGainMoneyDelta: ({ money }) => (money < 100 ? 1.5 : 0),
         });
 
         // vong Häuslichkeit her, was für 1 Haus
