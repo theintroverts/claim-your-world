@@ -15,28 +15,66 @@ body,
   box-sizing: border-box;
 }
 
-.game-stats-wrapper {
-	background: url('assets/beams/BeamHeart_LightBrown_middle.png');
-	max-height: 39px;
-}
 
-.game-stats-wrapper::before,
-.game-stats-wrapper::after {
+.game-stats-wrapper li::before,
+.game-stats-wrapper li::after {
 	height: 39px;
 	width: 39px;
 	display: block;
 	content: ' ';
 	position: absolute;
+	max-height: 39px;
 }
 
-.game-stats-wrapper::before {
-	background: url('assets/beams/BeamHeart_LightBrown_left.png');
+.game-stats-wrapper li::before {
 	left: -39px;
+}
+
+.game-stats-wrapper li::after {
+	right: -39px;
+}
+
+.game-stats-wrapper li.energy::before,
+.game-stats-wrapper li.energy::after {
 	top: 0;
 }
 
-.game-stats-wrapper::after {
+.game-stats-wrapper li.money::before,
+.game-stats-wrapper li.money::after {
+	top: 42px;
+}
+.game-stats-wrapper li.energy {
+	top: 42px;
+	background: url('assets/beams/BeamHeart_LightBrown_middle.png');
+}
+
+.game-stats-wrapper li.energy::before {
+	background: url('assets/beams/BeamHeart_LightBrown_left.png');
+}
+
+.game-stats-wrapper li.energy::after {
 	background: url('assets/beams/BeamHeart_LightBrown_right.png');
-	right: -39px;
-	top: 0;
+}
+
+
+.game-stats-wrapper li.money {
+	top: 42px;
+	background: url('assets/beams/BeamCoin_LightBrown_middle.png');
+}
+
+.game-stats-wrapper li.money::before {
+	background: url('assets/beams/BeamCoin_LightBrown_left.png');
+}
+
+.game-stats-wrapper li.money::after {
+	background: url('assets/beams/BeamCoin_LightBrown_right.png');
+}
+
+.game-stats-wrapper ul{
+	margin: 0;
+	padding: 0;
+}
+.game-stats-wrapper ul > li {
+	list-style: none !important;
+	padding: 6px 4px;
 }
