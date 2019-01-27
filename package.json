@@ -2,6 +2,7 @@
     "name": "claim-your-world",
     "version": "0.1.0",
     "private": true,
+    "homepage": "https://theintroverts.github.io/claim-your-world/",
     "dependencies": {
         "@emotion/core": "^10.0.6",
         "@emotion/styled": "^10.0.6",
