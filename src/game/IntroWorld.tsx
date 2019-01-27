@@ -64,7 +64,7 @@ class IntroWorld extends Component<Prop> {
             energyAmount: Number.POSITIVE_INFINITY,
             lossDelta: 0,
             colorCode: 'rgba(0, 255, 0, .7)',
-            playerGainEnergyDelta: () => 1,
+            playerGainEnergyDelta: ({ food }) => (food > 0 ? 1 : -0.01),
             playerGainFoodDelta: ({ energy }) => (energy < 90 ? -0.5 : -0.01),
         });
 
