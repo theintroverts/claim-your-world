@@ -2,8 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { PayloadActionCreator } from 'redux-starter-kit';
 
-import { openMenus, State } from '../../store';
+import { State } from '../../store';
 import { LockableKeyListener } from '../../util/LockableKeyListener';
+import InventoryMenu from './InventoryMenu';
+import { openMenus } from './slice';
 import TestMenu from './TestMenu';
 import { AvailableMenu, CommonMenuProps, MenuComponentType, MenuMeta, OpenMenu } from './types';
 
@@ -18,6 +20,8 @@ function getMenuComponent<T extends AvailableMenu>(menuName: T): MenuComponentTy
     switch (menuName as AvailableMenu) {
         case 'TestMenu':
             return TestMenu;
+        case 'InventoryMenu':
+            return InventoryMenu;
     }
 }
 const GameMenuHandler = ({ menus, keyListener, closeTopMenu, openMenu }: Props) => {
