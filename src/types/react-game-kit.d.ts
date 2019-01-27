@@ -19,9 +19,10 @@ declare module 'react-game-kit' {
             tileWidth: number;
         }>
     >;
-
-    declare class AudioPlayer {}
-
+    declare class AudioPlayer {
+        constructor(url: string, callback: () => void);
+        play(options: undefined | { loop?: boolean; volume?: numeric; offset?: numeric });
+    }
     export const Loop: React.ComponentType<{}>;
     export const Stage: React.ComponentType<Partial<{ height: number; width: number; style: any }>>;
     export class KeyListener {

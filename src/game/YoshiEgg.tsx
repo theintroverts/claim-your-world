@@ -9,6 +9,8 @@ import { EnergySourceCreationData, energySources, playerLocation, playerStats, S
 import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
 import { linkEnergySource } from './energySources';
 
+import { throttleExecution } from '../util/limitRenders';
+
 export interface Props {
     x: number;
     y: number;
@@ -29,7 +31,7 @@ class YoshiEgg extends React.Component<Props, YoshiEggState> {
     constructor(props: Props) {
         super(props);
 
-        this.state = { ...this.props };
+        this.state = { x: props.x, y: props.y };
     }
 
     componentDidMount() {
@@ -40,7 +42,7 @@ class YoshiEgg extends React.Component<Props, YoshiEggState> {
         Matter.Events.off(this.context.engine, 'afterUpdate', this.update);
     }
 
-    update = () => {
+    update = throttleExecution(() => {
         const bodyRef = this.bodyRef.current;
 
         if (!bodyRef || !bodyRef.body) {
@@ -72,7 +74,7 @@ class YoshiEgg extends React.Component<Props, YoshiEggState> {
                 playerGainEnergyDelta: () => 1.5,
             });
         }
-    };
+    });
 
     getWrapperStyles(): React.CSSProperties {
         const { x, y } = this.state;

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import { EnergySourceCreationData, energySources, playerStats, State, store } from '../store';
 import { extractTmxCollisionComposite, TileData } from '../util/layer';
+import { getFpsMeasure } from '../util/limitRenders';
 import Character from './Character';
 import { Debug } from './Debug';
 import EnergySource from './EnergySource';
@@ -30,6 +31,8 @@ export interface IntroWorldState {
     yoshiEggs: Array<YoshiEggState>;
 }
 
+const fpsCounter = getFpsMeasure(fps => console.log('engine frames this second', fps));
+
 class IntroWorld extends Component<Props, IntroWorldState> {
     constructor(props: Props) {
         super(props);
@@ -49,7 +52,7 @@ class IntroWorld extends Component<Props, IntroWorldState> {
 
     render() {
         return (
-            <World onInit={this.physicsInit}>
+            <World onInit={this.physicsInit} onUpdate={fpsCounter}>
                 <Level tileData={this.props.tileData} />
                 <Debug {...this.props.tileData} keys={this.props.keyListener} />
                 {this.state.yoshiEggs.map((pos, key) => (

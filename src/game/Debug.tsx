@@ -4,6 +4,7 @@ import * as React from 'react';
 import { KeyListener } from 'react-game-kit';
 
 import { TmxJson, TsxJson } from '../util/layer';
+import { throttleExecution } from '../util/limitRenders';
 
 type Props = {
     tmxJs: TmxJson;
@@ -33,11 +34,11 @@ export class Debug extends React.Component<Props, State> {
         Matter.Events.off(this.context.engine, 'afterUpdate', this.checkKeys);
     }
 
-    checkKeys = () => {
+    checkKeys = throttleExecution(() => {
         if (this.props.keys.isDown(80)) {
             this.setState({ debugEnabled: true });
         }
-    };
+    }, 10);
 
     getWrapperStyles(): React.CSSProperties {
         return {

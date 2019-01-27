@@ -17,7 +17,18 @@ export interface Props {
 }
 
 class Game extends Component<Props> {
+    private player: AudioPlayer | undefined;
+    private music: any;
+
     componentDidMount() {
+        this.player = new AudioPlayer('music/Depressed of Happytown.mp3', () => {
+            this.music = this.player!.play({
+                loop: true,
+                offset: 1,
+                volume: 0.8,
+            });
+        });
+
         this.keyListener.subscribe([
             this.keyListener.LEFT,
             this.keyListener.RIGHT,
