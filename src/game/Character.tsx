@@ -144,7 +144,8 @@ class Character extends React.Component<Props, CharacterState> {
         return (
             <div style={this.getWrapperStyles()}>
                 <GameKitBody
-                    args={[x, y, 12, 12]}
+                    shape="circle"
+                    args={[x, y, 6]}
                     inertia={Infinity}
                     ref={this.bodyRef}
                     collisionFilter={{

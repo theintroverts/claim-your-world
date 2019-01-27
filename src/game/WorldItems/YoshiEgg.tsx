@@ -91,7 +91,8 @@ class YoshiEgg extends React.Component<Props, YoshiEggState> {
         return (
             <div style={this.getWrapperStyles()}>
                 <GameKitBody
-                    args={[x, y, 24, 24]}
+                    shape="circle"
+                    args={[x, y, 12]}
                     inertia={Infinity}
                     ref={this.bodyRef}
                     collisionFilter={{
@@ -100,7 +101,7 @@ class YoshiEgg extends React.Component<Props, YoshiEggState> {
                         mask: COLLISION_CATEGORY.PLAYER | COLLISION_CATEGORY.WALL | COLLISION_CATEGORY.OBJECT,
                     }}
                 >
-                    <img src="yoshiegg.png" style={{ transform: 'translateX(-13px) translateY(-40px)' }} />
+                    <img src="yoshiegg.png" style={{ position: 'absolute', left: -13, top: -23 }} />
                 </GameKitBody>
             </div>
         );

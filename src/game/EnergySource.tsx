@@ -24,7 +24,7 @@ export default class EnergySource extends React.Component<EnergySourceData, Ener
     constructor(props: EnergySourceData) {
         super(props);
 
-        this.state = props;
+        this.state = { ...props };
         this.linkTo = getEnergySourceLink(props.id);
     }
 

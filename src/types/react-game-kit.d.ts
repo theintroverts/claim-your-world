@@ -38,6 +38,7 @@ declare module 'react-game-kit' {
     }
 
     declare class Body extends React.Component<{
+        shape?: 'rectangle' | 'circle';
         args: number[];
         inertia: number;
         [key: string]: any;
