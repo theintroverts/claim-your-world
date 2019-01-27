@@ -63,6 +63,5 @@ body,
 }
 
 .game-stats-wrapper li.food::before {
-	width: 46px;
-	background: url('assets/beams/BeamSeed_LightBrown_left.png');
+	background: url('assets/beams/BeamBurger_LightBrown_left.png');
 }
