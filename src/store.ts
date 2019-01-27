@@ -4,6 +4,7 @@ import { EnhancedStore } from 'redux-starter-kit/src/configureStore';
 import UUID from 'uuid';
 
 import { EnergySourceData } from './game/energySources';
+import { AvailableMenu, MenuMeta, OpenMenu } from './game/Menu/types';
 
 export const playerStats = createSlice({
     slice: 'playerStats',
@@ -39,6 +40,15 @@ export const playerLocation = createSlice({
     },
 });
 
+export const openMenus = createSlice({
+    slice: 'openMenus',
+    initialState: [{ menu: 'TestMenu' }] as Array<OpenMenu<AvailableMenu>>,
+    reducers: {
+        open: (state, { payload }: PayloadAction<OpenMenu<AvailableMenu>>) => [...state, payload],
+        closeTop: state => state.slice(0, -1),
+    },
+});
+
 type AllowedPartialBlar = 'id' | 'playerGainEnergyDelta' | 'playerGainMoneyDelta' | 'playerGainFoodDelta';
 export type EnergySourceCreationData = Omit<EnergySourceData, 'createdAt' | AllowedPartialBlar> &
     Partial<Pick<EnergySourceData, AllowedPartialBlar>>;
@@ -66,6 +76,7 @@ export const store = configureStore({
         playerStats: playerStats.reducer,
         playerLocation: playerLocation.reducer,
         energySources: energySources.reducer,
+        openMenus: openMenus.reducer,
     }),
     middleware: [],
     devTools: true,
