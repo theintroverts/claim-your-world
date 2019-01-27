@@ -1,10 +1,14 @@
 import { Omit } from 'react-redux';
 import { combineReducers, configureStore, createSlice, PayloadAction } from 'redux-starter-kit';
 import { EnhancedStore } from 'redux-starter-kit/src/configureStore';
-import UUID from 'uuid';
 
 import { EnergySourceData } from './game/energySources';
+import { energySources } from './game/EnergySources/slice';
+import { inventory } from './game/Inventory/slice';
+import { InventoryItem } from './game/Inventory/types';
+import { openMenus } from './game/Menu/slice';
 import { AvailableMenu, MenuMeta, OpenMenu } from './game/Menu/types';
+import { worldItems } from './game/WorldItems/slice';
 
 export const playerStats = createSlice({
     slice: 'playerStats',
@@ -40,43 +44,14 @@ export const playerLocation = createSlice({
     },
 });
 
-export const openMenus = createSlice({
-    slice: 'openMenus',
-    initialState: [{ menu: 'TestMenu' }] as Array<OpenMenu<AvailableMenu>>,
-    reducers: {
-        open: (state, { payload }: PayloadAction<OpenMenu<AvailableMenu>>) => [...state, payload],
-        closeTop: state => state.slice(0, -1),
-    },
-});
-
-type AllowedPartialBlar = 'id' | 'playerGainEnergyDelta' | 'playerGainMoneyDelta' | 'playerGainFoodDelta';
-export type EnergySourceCreationData = Omit<EnergySourceData, 'createdAt' | AllowedPartialBlar> &
-    Partial<Pick<EnergySourceData, AllowedPartialBlar>>;
-
-export const energySources = createSlice({
-    slice: 'energySources',
-    initialState: [] as Array<EnergySourceData>,
-    reducers: {
-        addEnergySource: (state, { payload: { id, ...data } }: PayloadAction<EnergySourceCreationData>) => [
-            ...state,
-            {
-                id: id || UUID.v4(),
-                playerGainEnergyDelta: () => 0,
-                playerGainMoneyDelta: () => 0,
-                playerGainFoodDelta: () => 0,
-                ...data,
-                createdAt: new Date(),
-            },
-        ],
-    },
-});
-
 export const store = configureStore({
     reducer: combineReducers({
         playerStats: playerStats.reducer,
         playerLocation: playerLocation.reducer,
         energySources: energySources.reducer,
         openMenus: openMenus.reducer,
+        inventory: inventory.reducer,
+        worldItems: worldItems.reducer,
     }),
     middleware: [],
     devTools: true,

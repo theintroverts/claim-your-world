@@ -3,15 +3,16 @@ import React, { Component } from 'react';
 import { KeyListener, World } from 'react-game-kit';
 import { connect } from 'react-redux';
 
-import { EnergySourceCreationData, energySources, playerStats, State, store } from '../store';
+import { playerStats, State } from '../store';
 import { extractTmxCollisionComposite, TileData } from '../util/layer';
 import { getFpsMeasure } from '../util/limitRenders';
 import Character from './Character';
 import { Debug } from './Debug';
 import EnergySource from './EnergySource';
 import { EnergySourceData, getEnergySourceData } from './energySources';
+import { EnergySourceCreationData, energySources } from './EnergySources/slice';
 import Level from './Level';
-import YoshiEgg, { YoshiEggState } from './YoshiEgg';
+import YoshiEgg, { YoshiEggState } from './WorldItems/YoshiEgg';
 
 export interface Props {
     keyListener: KeyListener;
@@ -19,6 +20,7 @@ export interface Props {
     energySources: Array<EnergySourceData>;
 
     playerStats: State['playerStats'];
+    worldItems: State['worldItems'];
 
     modifyEnergy: (energy: number) => void;
     modifyMoney: (money: number) => void;
@@ -27,13 +29,9 @@ export interface Props {
     addEnergySource: (x: EnergySourceCreationData) => void;
 }
 
-export interface IntroWorldState {
-    yoshiEggs: Array<YoshiEggState>;
-}
-
 const fpsCounter = getFpsMeasure(fps => console.log('engine frames this second', fps));
 
-class IntroWorld extends Component<Props, IntroWorldState> {
+class IntroWorld extends Component<Props> {
     constructor(props: Props) {
         super(props);
 
@@ -46,8 +44,6 @@ class IntroWorld extends Component<Props, IntroWorldState> {
                 y: Math.round(Math.random() * mapHeight),
             })),
         };
-
-        console.log(this.state.yoshiEggs);
     }
 
     render() {
@@ -55,8 +51,8 @@ class IntroWorld extends Component<Props, IntroWorldState> {
             <World onInit={this.physicsInit} onUpdate={fpsCounter}>
                 <Level tileData={this.props.tileData} />
                 <Debug {...this.props.tileData} keys={this.props.keyListener} />
-                {this.state.yoshiEggs.map((pos, key) => (
-                    <YoshiEgg key={key} {...pos} />
+                {this.props.worldItems.map(({ Component, props }, key) => (
+                    <Component key={key} {...props} />
                 ))}
                 {this.props.energySources.map(x => (
                     <EnergySource key={x.id} {...x} />
@@ -162,7 +158,7 @@ class IntroWorld extends Component<Props, IntroWorldState> {
 }
 
 export default connect(
-    ({ energySources, playerStats }: State) => ({ energySources, playerStats }),
+    ({ energySources, playerStats, worldItems }: State) => ({ energySources, playerStats, worldItems }),
     {
         modifyEnergy: playerStats.actions.modifyEnergy,
         modifyMoney: playerStats.actions.modifyMoney,

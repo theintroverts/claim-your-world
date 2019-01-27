@@ -5,11 +5,10 @@ import { Body as GameKitBody, KeyListener, Sprite } from 'react-game-kit';
 import { connect } from 'react-redux';
 import UUID from 'uuid';
 
-import { EnergySourceCreationData, energySources, playerLocation, playerStats, State } from '../store';
-import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
-import { linkEnergySource } from './energySources';
-
-import { throttleExecution } from '../util/limitRenders';
+import { COLLISION_CATEGORY, COLLISION_GROUP } from '../../util/layer';
+import { throttleExecution } from '../../util/limitRenders';
+import { linkEnergySource } from '../energySources';
+import { EnergySourceCreationData, energySources } from '../EnergySources/slice';
 
 export interface Props {
     x: number;
