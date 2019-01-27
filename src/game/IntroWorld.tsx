@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { KeyListener, World } from 'react-game-kit';
 import { connect } from 'react-redux';
 
-import { EnergySourceCreationData, energySources, playerStats, State } from '../store';
+import { EnergySourceCreationData, energySources, playerStats, State, store } from '../store';
 import { extractTmxCollisionComposite, TileData } from '../util/layer';
 import Character from './Character';
 import { Debug } from './Debug';
@@ -15,6 +15,8 @@ export interface Prop {
     keyListener: KeyListener;
     tileData: TileData;
     energySources: Array<EnergySourceData>;
+
+    playerStats: State['playerStats'];
 
     modifyEnergy: (energy: number) => void;
     modifyMoney: (money: number) => void;
@@ -50,7 +52,7 @@ class IntroWorld extends Component<Prop> {
             energyAmount: Number.POSITIVE_INFINITY,
             lossDelta: 0,
             colorCode: 'rgba(255, 0, 0, .5)',
-            playerGainEnergyDelta: -2,
+            playerGainEnergyDelta: () => -2,
         });
 
         // vong Häuslichkeit her, was für 1 Haus
@@ -61,7 +63,8 @@ class IntroWorld extends Component<Prop> {
             energyAmount: Number.POSITIVE_INFINITY,
             lossDelta: 0,
             colorCode: 'rgba(0, 255, 0, .7)',
-            playerGainEnergyDelta: 1,
+            playerGainEnergyDelta: () => 1,
+            playerGainFoodDelta: ({ energy }) => (energy < 90 ? -0.5 : 0),
         });
 
         // Marktstand: teuer, aber gutes Essen und wenig Stress (weil auf welchem Parkplatz ist schon stressig)
@@ -72,9 +75,9 @@ class IntroWorld extends Component<Prop> {
             energyAmount: Number.POSITIVE_INFINITY,
             lossDelta: 0,
             colorCode: 'rgba(255, 255, 0, .7)',
-            playerGainEnergyDelta: -1,
-            playerGainMoneyDelta: -5,
-            playerGainFoodDelta: 3,
+            playerGainEnergyDelta: () => -1,
+            playerGainMoneyDelta: () => -5,
+            playerGainFoodDelta: ({ money }) => (money ? 8 : 0),
         });
 
         // süper market
@@ -85,9 +88,9 @@ class IntroWorld extends Component<Prop> {
             energyAmount: Number.POSITIVE_INFINITY,
             lossDelta: 0,
             colorCode: 'rgba(255, 255, 0, .7)',
-            playerGainEnergyDelta: -7,
-            playerGainMoneyDelta: -2,
-            playerGainFoodDelta: 1,
+            playerGainEnergyDelta: () => -4,
+            playerGainMoneyDelta: () => -1,
+            playerGainFoodDelta: ({ money }) => (money ? 2 : 0),
         });
 
         Matter.Events.on(engine, 'collisionActive', (e: any) => {
@@ -107,9 +110,9 @@ class IntroWorld extends Component<Prop> {
                 );
 
                 const factor = Math.max(0, energySourceData.radius - distance) / distance;
-                totalDeltaEnergy += energySourceData.playerGainEnergyDelta * factor;
-                totalDeltaMoney += energySourceData.playerGainMoneyDelta * factor;
-                totalDeltaFood += energySourceData.playerGainFoodDelta * factor;
+                totalDeltaEnergy += energySourceData.playerGainEnergyDelta(this.props.playerStats) * factor;
+                totalDeltaMoney += energySourceData.playerGainMoneyDelta(this.props.playerStats) * factor;
+                totalDeltaFood += energySourceData.playerGainFoodDelta(this.props.playerStats) * factor;
             }
 
             if (totalDeltaEnergy !== 0) this.props.modifyEnergy(totalDeltaEnergy / 100);
@@ -120,7 +123,7 @@ class IntroWorld extends Component<Prop> {
 }
 
 export default connect(
-    ({ energySources }: State) => ({ energySources }),
+    ({ energySources, playerStats }: State) => ({ energySources, playerStats }),
     {
         modifyEnergy: playerStats.actions.modifyEnergy,
         modifyMoney: playerStats.actions.modifyMoney,

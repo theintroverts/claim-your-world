@@ -49,9 +49,9 @@ export const energySources = createSlice({
         addEnergySource: (state, { payload: energySource }: PayloadAction<EnergySourceCreationData>) => [
             ...state,
             {
-                playerGainEnergyDelta: 0,
-                playerGainMoneyDelta: 0,
-                playerGainFoodDelta: 0,
+                playerGainEnergyDelta: () => 0,
+                playerGainMoneyDelta: () => 0,
+                playerGainFoodDelta: () => 0,
                 ...energySource,
                 key: Math.random().toString(),
                 createdAt: new Date(),

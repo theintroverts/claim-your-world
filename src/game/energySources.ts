@@ -2,6 +2,8 @@ import Matter from 'matter-js';
 
 import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
 
+type PlayerGainHandler = ({ energy, money, food }: { energy: number; money: number; food: number }) => number;
+
 export interface EnergySourceData {
     key: string;
     createdAt: Date;
@@ -15,9 +17,9 @@ export interface EnergySourceData {
 
     colorCode: string;
 
-    playerGainEnergyDelta: number;
-    playerGainMoneyDelta: number;
-    playerGainFoodDelta: number;
+    playerGainEnergyDelta: PlayerGainHandler;
+    playerGainMoneyDelta: PlayerGainHandler;
+    playerGainFoodDelta: PlayerGainHandler;
 }
 
 export const registerEnergySource = (world: Matter.World, data: EnergySourceData): Matter.Body => {
