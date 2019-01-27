@@ -7,6 +7,7 @@ import { PixelFont } from './PixelFont';
 export interface Props {
     energy: number;
     money: number;
+    food: number;
 }
 
 const GameStats: FunctionComponent<Props> = props => (
@@ -17,7 +18,10 @@ const GameStats: FunctionComponent<Props> = props => (
         <li className="money">
             <PixelFont text={props.money.toFixed(1)} />
         </li>
+        <li className="food">
+            <PixelFont text={props.food.toFixed(1)} />
+        </li>
     </ul>
 );
 
-export default connect(({ playerStats: { energy, money } }: State) => ({ energy, money }))(GameStats);
+export default connect(({ playerStats: { energy, money, food } }: State) => ({ energy, money, food }))(GameStats);

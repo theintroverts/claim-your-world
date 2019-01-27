@@ -17,6 +17,9 @@ export interface Prop {
     energySources: Array<EnergySourceData>;
 
     modifyEnergy: (energy: number) => void;
+    modifyMoney: (money: number) => void;
+    modifyFood: (food: number) => void;
+
     addEnergySource: (x: EnergySourceCreationData) => void;
 }
 
@@ -39,26 +42,59 @@ class IntroWorld extends Component<Prop> {
         const collision = extractTmxCollisionComposite(this.props.tileData.tmxJs);
         Matter.World.addComposite(engine.world, collision);
 
+        // der Arbeitsamt
         this.props.addEnergySource({
             x: 1175,
             y: 630,
             radius: 200,
             energyAmount: Number.POSITIVE_INFINITY,
-            playerGainDelta: -0.02,
             lossDelta: 0,
+            colorCode: 'rgba(255, 0, 0, .5)',
+            playerGainEnergyDelta: -2,
         });
 
+        // vong Häuslichkeit her, was für 1 Haus
         this.props.addEnergySource({
             x: 2600,
             y: 710,
             radius: 75,
             energyAmount: Number.POSITIVE_INFINITY,
-            playerGainDelta: 0.01,
             lossDelta: 0,
+            colorCode: 'rgba(0, 255, 0, .7)',
+            playerGainEnergyDelta: 1,
+        });
+
+        // Marktstand: teuer, aber gutes Essen und wenig Stress (weil auf welchem Parkplatz ist schon stressig)
+        this.props.addEnergySource({
+            x: 1890,
+            y: 470,
+            radius: 25,
+            energyAmount: Number.POSITIVE_INFINITY,
+            lossDelta: 0,
+            colorCode: 'rgba(255, 255, 0, .7)',
+            playerGainEnergyDelta: -1,
+            playerGainMoneyDelta: -5,
+            playerGainFoodDelta: 3,
+        });
+
+        // süper market
+        this.props.addEnergySource({
+            x: 2070,
+            y: 420,
+            radius: 40,
+            energyAmount: Number.POSITIVE_INFINITY,
+            lossDelta: 0,
+            colorCode: 'rgba(255, 255, 0, .7)',
+            playerGainEnergyDelta: -7,
+            playerGainMoneyDelta: -2,
+            playerGainFoodDelta: 1,
         });
 
         Matter.Events.on(engine, 'collisionActive', (e: any) => {
-            let scoreModification = 0;
+            let totalDeltaEnergy = 0;
+            let totalDeltaMoney = 0;
+            let totalDeltaFood = 0;
+
             for (const pair of (e.pairs || []) as Array<IPair>) {
                 const energySourceData = getEnergySourceData(pair.bodyA) || getEnergySourceData(pair.bodyB);
                 if (energySourceData === undefined) {
@@ -71,12 +107,14 @@ class IntroWorld extends Component<Prop> {
                 );
 
                 const factor = Math.max(0, energySourceData.radius - distance) / distance;
-                scoreModification += energySourceData.playerGainDelta * factor;
+                totalDeltaEnergy += energySourceData.playerGainEnergyDelta * factor;
+                totalDeltaMoney += energySourceData.playerGainMoneyDelta * factor;
+                totalDeltaFood += energySourceData.playerGainFoodDelta * factor;
             }
 
-            if (scoreModification !== 0) {
-                this.props.modifyEnergy(scoreModification);
-            }
+            if (totalDeltaEnergy !== 0) this.props.modifyEnergy(totalDeltaEnergy / 100);
+            if (totalDeltaMoney !== 0) this.props.modifyMoney(totalDeltaMoney / 100);
+            if (totalDeltaFood !== 0) this.props.modifyFood(totalDeltaFood / 100);
         });
     };
 }
@@ -85,6 +123,9 @@ export default connect(
     ({ energySources }: State) => ({ energySources }),
     {
         modifyEnergy: playerStats.actions.modifyEnergy,
+        modifyMoney: playerStats.actions.modifyMoney,
+        modifyFood: playerStats.actions.modifyFood,
+
         addEnergySource: energySources.actions.addEnergySource,
     }
 )(IntroWorld);

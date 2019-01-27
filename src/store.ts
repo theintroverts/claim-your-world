@@ -7,11 +7,23 @@ import { EnergySourceData } from './game/energySources';
 export const playerStats = createSlice({
     slice: 'playerStats',
     initialState: {
-		energy: 100,
-		money: 30,
+        energy: 100,
+        money: 30,
+        food: 42,
     },
     reducers: {
-        modifyEnergy: (state, { payload: energy }) => ({...state, energy: Math.min(100, state.energy + energy) }),
+        modifyEnergy: (state, { payload: energy }: PayloadAction<number>) => ({
+            ...state,
+            energy: Math.min(100, state.energy + energy),
+        }),
+        modifyMoney: (state, { payload: money }: PayloadAction<number>) => ({
+            ...state,
+            money: Math.max(0, state.money + money),
+        }),
+        modifyFood: (state, { payload: food }: PayloadAction<number>) => ({
+            ...state,
+            food: Math.max(0, Math.min(100, state.food + food)),
+        }),
     },
 });
 
@@ -26,7 +38,9 @@ export const playerLocation = createSlice({
     },
 });
 
-export type EnergySourceCreationData = Omit<EnergySourceData, 'createdAt' | 'key'>;
+type AllowedPartialBlar = 'playerGainEnergyDelta' | 'playerGainMoneyDelta' | 'playerGainFoodDelta';
+export type EnergySourceCreationData = Omit<EnergySourceData, 'createdAt' | 'key' | AllowedPartialBlar> &
+    Partial<Pick<EnergySourceData, AllowedPartialBlar>>;
 
 export const energySources = createSlice({
     slice: 'energySources',
@@ -34,7 +48,14 @@ export const energySources = createSlice({
     reducers: {
         addEnergySource: (state, { payload: energySource }: PayloadAction<EnergySourceCreationData>) => [
             ...state,
-            { ...energySource, key: Math.random().toString(), createdAt: new Date() },
+            {
+                playerGainEnergyDelta: 0,
+                playerGainMoneyDelta: 0,
+                playerGainFoodDelta: 0,
+                ...energySource,
+                key: Math.random().toString(),
+                createdAt: new Date(),
+            },
         ],
     },
 });

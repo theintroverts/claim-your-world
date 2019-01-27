@@ -1,17 +1,23 @@
 import Matter from 'matter-js';
-import { Omit } from 'react-redux';
 
 import { COLLISION_CATEGORY, COLLISION_GROUP } from '../util/layer';
 
 export interface EnergySourceData {
     key: string;
     createdAt: Date;
+
     x: number;
     y: number;
     radius: number;
+
     energyAmount: number;
-    playerGainDelta: number;
     lossDelta: number;
+
+    colorCode: string;
+
+    playerGainEnergyDelta: number;
+    playerGainMoneyDelta: number;
+    playerGainFoodDelta: number;
 }
 
 export const registerEnergySource = (world: Matter.World, data: EnergySourceData): Matter.Body => {
