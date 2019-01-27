@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
 import * as React from 'react';
 
+import styled from '@emotion/styled-base';
+
 import { throttleExecution } from '../../util/limitRenders';
-import { KeyLock, LockableKeyListener } from '../../util/LockableKeyListener';
+import { KeyLock } from '../../util/LockableKeyListener';
 import { PixelFont } from '../PixelFont';
 import { MenuItem, MenuList, MenuPane } from './';
+import { CommonMenuProps } from './types';
 
-interface Props {
+interface Props extends CommonMenuProps {
     rows: Array<Row>;
-    keyListener: LockableKeyListener;
-    style?: React.CSSProperties;
-    className?: string;
 }
 
 interface Row {
@@ -23,23 +23,22 @@ interface State {
     selectedOption: number;
 }
 
-export class BaseMenu extends React.Component<Props, State> {
+class BaseMenu extends React.Component<Props, State> {
     static contextTypes = {
         loop: PropTypes.object,
     };
     state = { selectedOption: 0 };
     private keyLock?: KeyLock;
+    private loopSubscription?: number;
 
     componentDidMount() {
         this.keyLock = this.props.keyListener.acquireLock();
-        this.context.loop.subscribe(this.checkKeys);
+        this.loopSubscription = this.context.loop.subscribe(this.checkKeys);
     }
 
     componentWillUnmount() {
-        if (this.keyLock) {
-            this.props.keyListener.releaseLock(this.keyLock);
-        }
-        this.context.loop.unsubscribe(this.checkKeys);
+        this.context.loop.unsubscribe(this.loopSubscription!);
+        this.props.keyListener.releaseLock(this.keyLock!);
     }
 
     checkKeys = throttleExecution(() => {
@@ -83,3 +82,10 @@ export class BaseMenu extends React.Component<Props, State> {
         );
     }
 }
+
+export default styled(BaseMenu)`
+    position: absolute;
+    left: 400px;
+    top: 225px;
+    transform: translate(-50%, -50%);
+`;

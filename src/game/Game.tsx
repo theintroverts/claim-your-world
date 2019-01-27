@@ -7,7 +7,7 @@ import { TmxJson, TsxJson } from '../util/layer';
 import { LockableKeyListener } from '../util/LockableKeyListener';
 import GameStats from './GameStats';
 import IntroWorld from './IntroWorld';
-import { BaseMenu } from './Menu/BaseMenu';
+import GameMenuHandler from './Menu/GameMenuHandler';
 import Scalator from './Scalator';
 import Viewport from './Viewport';
 
@@ -54,11 +54,7 @@ class Game extends Component<Props> {
                         <div className="game-stats-wrapper" style={this.getGameStatsWrapperStyles()}>
                             <GameStats />
                         </div>
-                        <BaseMenu
-                            keyListener={this.keyListener}
-                            rows={[{ text: 'Buy a Toy', onSelect: () => console.log('foo') }, { text: 'cancel' }]}
-                            style={{ position: 'absolute', top: '50px', left: '50px' }}
-                        />
+                        <GameMenuHandler keyListener={this.keyListener} />
                     </Scalator>
                 </Stage>
             </Loop>
