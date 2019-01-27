@@ -22,6 +22,8 @@ declare module 'react-game-kit' {
     declare class AudioPlayer {
         constructor(url: string, callback: () => void);
         play(options: undefined | { loop?: boolean; volume?: numeric; offset?: numeric });
+        context: any;
+        buffer: any;
     }
     export const Loop: React.ComponentType<{}>;
     export const Stage: React.ComponentType<Partial<{ height: number; width: number; style: any }>>;
