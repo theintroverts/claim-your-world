@@ -4,13 +4,7 @@ import { connect } from 'react-redux';
 import { State } from '../store';
 import { PixelFont } from './PixelFont';
 
-export interface Props {
-    energy: number;
-    money: number;
-    food: number;
-}
-
-const GameStats: FunctionComponent<Props> = props => (
+const GameStats: FunctionComponent<State['playerStats']> = props => (
     <ul>
         <li className="energy">
             <PixelFont text={props.energy.toFixed(1)} />
@@ -24,4 +18,4 @@ const GameStats: FunctionComponent<Props> = props => (
     </ul>
 );
 
-export default connect(({ playerStats: { energy, money, food } }: State) => ({ energy, money, food }))(GameStats);
+export default connect(({ playerStats }: State) => ({ ...playerStats }))(GameStats);
