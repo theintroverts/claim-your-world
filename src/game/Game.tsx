@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 
 import { State } from '../store';
 import { TmxJson, TsxJson } from '../util/layer';
+import { LockableKeyListener } from '../util/LockableKeyListener';
 import GameStats from './GameStats';
 import IntroWorld from './IntroWorld';
+import { BaseMenu } from './Menu/BaseMenu';
 import Scalator from './Scalator';
 import Viewport from './Viewport';
 
@@ -23,7 +25,9 @@ class Game extends Component<Props> {
             this.keyListener.RIGHT,
             this.keyListener.UP,
             this.keyListener.DOWN,
-            80,
+            this.keyListener.SPACE,
+            this.keyListener.ENTER,
+            this.keyListener.KEY_P,
         ]);
     }
 
@@ -50,6 +54,11 @@ class Game extends Component<Props> {
                         <div className="game-stats-wrapper" style={this.getGameStatsWrapperStyles()}>
                             <GameStats />
                         </div>
+                        <BaseMenu
+                            keyListener={this.keyListener}
+                            rows={[{ text: 'Buy a Toy', onSelect: () => console.log('foo') }, { text: 'cancel' }]}
+                            style={{ position: 'absolute', top: '50px', left: '50px' }}
+                        />
                     </Scalator>
                 </Stage>
             </Loop>
@@ -73,7 +82,7 @@ class Game extends Component<Props> {
         };
     }
 
-    private keyListener = new KeyListener();
+    private keyListener = new LockableKeyListener();
 }
 
 export default connect(({ playerStats: { energy } }: State) => ({ energy }))(Game);

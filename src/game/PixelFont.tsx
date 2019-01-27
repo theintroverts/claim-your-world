@@ -2,6 +2,8 @@ import * as React from 'react';
 
 interface Props {
     text: string;
+    style?: React.CSSProperties;
+    className?: string;
 }
 
 interface State {
@@ -67,6 +69,6 @@ export class PixelFont extends React.Component<Props, State> {
     }
 
     public render() {
-        return <canvas ref={this.canvas} height={16} />;
+        return <canvas ref={this.canvas} height={16} style={this.props.style} className={this.props.className} />;
     }
 }
