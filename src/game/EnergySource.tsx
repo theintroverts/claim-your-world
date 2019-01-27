@@ -23,7 +23,30 @@ export default class EnergySource extends React.Component<EnergySourceData> {
     }
 
     render() {
-        return <div style={this.getStyle()} />;
+        const { x, y, radius } = this.props;
+        return (
+            <svg
+                style={{
+                    position: 'absolute',
+                    left: this.props.x - this.props.radius * 2,
+                    top: this.props.y - this.props.radius * 2,
+                    width: 4 * radius,
+                    height: 4 * radius,
+                }}
+            >
+                <filter id="blurMe">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation={radius * 0.06} />
+                </filter>
+
+                <circle
+                    cx={radius * 2}
+                    cy={radius * 2}
+                    r={radius}
+                    fill={this.props.playerGainDelta < 0 ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .7)'}
+                    filter="url(#blurMe)"
+                />
+            </svg>
+        );
     }
 
     getStyle(): React.CSSProperties {
