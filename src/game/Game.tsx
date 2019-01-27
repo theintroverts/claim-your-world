@@ -14,21 +14,73 @@ import Viewport from './Viewport';
 const tmxJs: TmxJson = require('../assets/ClaimYourWorld.tmx.json');
 const tsxJs: TsxJson = require('../assets/ClaimYourWorld.tsx.json');
 
+function makeDistortionCurve(amount: number | undefined) {
+    var k = typeof amount === 'number' ? amount : 50,
+        n_samples = 44100,
+        curve = new Float32Array(n_samples),
+        deg = Math.PI / 180,
+        i = 0,
+        x;
+    for (; i < n_samples; ++i) {
+        x = (i * 2) / n_samples - 1;
+        curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+}
+
 export interface Props {
     energy: number;
 }
 
 class Game extends Component<Props> {
     private player: AudioPlayer | undefined;
-    private music: any;
+    private distortion: any;
+    private distortionLevel: any = null;
+    private stopMusic: undefined | (() => void);
+
+    public UNSAFE_componentWillReceiveProps(newProps: Props) {
+        if (newProps.energy <= 0) {
+            this.stopMusic && this.stopMusic();
+        } else if (newProps.energy < 15) {
+            if (this.distortionLevel !== 15) {
+                this.distortion.curve = makeDistortionCurve(60);
+                this.distortionLevel = 15;
+                console.log('moar destortion');
+            }
+        } else if (newProps.energy < 25) {
+            if (this.distortionLevel !== 25) {
+                this.distortion.curve = makeDistortionCurve(35);
+                this.distortionLevel = 25;
+                console.log('some distortion');
+            }
+        } else if (this.distortionLevel !== null) {
+            this.distortion.curve = null;
+            this.distortionLevel = null;
+        }
+    }
 
     componentDidMount() {
         this.player = new AudioPlayer('music/Depressed of Happytown.mp3', () => {
-            this.music = this.player!.play({
-                loop: true,
-                offset: 1,
-                volume: 0.8,
-            });
+            if (this.player === undefined) {
+                throw new Error('not reached');
+            }
+
+            const analyser = this.player.context.createAnalyser();
+            this.distortion = this.player.context.createWaveShaper();
+            const source = this.player.context.createBufferSource();
+
+            const gainNode = this.player.context.createGain();
+            gainNode.gain.value = 0.8;
+
+            source.connect(analyser);
+            analyser.connect(this.distortion);
+            this.distortion.connect(gainNode);
+            gainNode.connect(this.player.context.destination);
+
+            source.buffer = this.player.buffer;
+            source.start(0);
+            source.loop = true;
+            this.stopMusic = source.stop.bind(source);
         });
 
         this.keyListener.subscribe([
