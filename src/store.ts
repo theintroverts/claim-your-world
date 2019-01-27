@@ -22,7 +22,7 @@ export const playerStats = createSlice({
         }),
         modifyFood: (state, { payload: food }: PayloadAction<number>) => ({
             ...state,
-            food: Math.max(0, Math.min(100, state.food + food)),
+            food: Math.max(0, state.food + food),
         }),
     },
 });
