@@ -108,6 +108,11 @@ class Character extends React.Component<Props, CharacterState> {
             this.setState({ spriteState });
         }
 
+        if (velocityX !== 0 && velocityY !== 0) {
+            velocityX /= Math.sqrt(2);
+            velocityY /= Math.sqrt(2);
+        }
+
         this.move(velocityX, velocityY);
     };
 
